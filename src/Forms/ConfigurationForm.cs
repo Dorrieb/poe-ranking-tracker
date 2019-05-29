@@ -112,7 +112,7 @@ namespace PoeRankingTracker
             showExperienceAheadValue.Visible = Properties.Settings.Default.ShowExperienceAhead;
             showExperienceBehindLabel.Visible = Properties.Settings.Default.ShowExperienceBehind;
             showExperienceBehindValue.Visible = Properties.Settings.Default.ShowExperienceBehind;
-            showProgressBarCheckBox.Visible = Properties.Settings.Default.ShowProgressBar;
+            progressBar.Visible = Properties.Settings.Default.ShowProgressBar;
             progressBar.SetColor(Properties.Settings.Default.FontColor);
             infoKeyProvider.Icon = Icon.FromHandle(Properties.Resources.Key_16x.GetHicon());
             warningKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyWarning_16x.GetHicon());
