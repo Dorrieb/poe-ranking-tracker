@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccountName" xml:space="preserve">
+    <value>Compte</value>
+    <comment>Account name label</comment>
+  </data>
+  <data name="BackgroundColor" xml:space="preserve">
+    <value>Couleur de fond</value>
+    <comment>Background color label</comment>
+  </data>
+  <data name="CharacterName" xml:space="preserve">
+    <value>Personnage</value>
+    <comment>Character name label</comment>
+  </data>
+  <data name="ChooseFont" xml:space="preserve">
+    <value>Choisir la fonte</value>
+    <comment>Choose font button label</comment>
+  </data>
+  <data name="ClassRank" xml:space="preserve">
+    <value>Rang de classe</value>
+    <comment>Class rank label (preview and tracker)</comment>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>POE Ranking Tracker - Configuration</value>
+    <comment>Configuration form title</comment>
+  </data>
+  <data name="DeadsAhead" xml:space="preserve">
+    <value>Morts devant</value>
+    <comment>Deads ahead label (preview and tracker)</comment>
+  </data>
+  <data name="ExperienceAhead" xml:space="preserve">
+    <value>XP pour gagner un rang</value>
+    <comment>Experience to gain rank label (preview and tracker)</comment>
+  </data>
+  <data name="ExperienceBehind" xml:space="preserve">
+    <value>XP pour perdre un rang</value>
+    <comment>Experience to lose rank label (preview and tracker)</comment>
+  </data>
+  <data name="FailedToRetrieveLeagues" xml:space="preserve">
+    <value>Impossible de récupérer les ligues</value>
+    <comment>Leagues retrieval error</comment>
+  </data>
+  <data name="GlobalRank" xml:space="preserve">
+    <value>Rang global</value>
+    <comment>Global rank label (preview and tracker)</comment>
+  </data>
+  <data name="HideAdvancedOptions" xml:space="preserve">
+    <value>Masquer les options avancées</value>
+    <comment>Hide advanced options label</comment>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Langage</value>
+    <comment>Language label</comment>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>Anglais</value>
+    <comment>English label</comment>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+    <comment>French label</comment>
+  </data>
+  <data name="League" xml:space="preserve">
+    <value>Ligue/Course</value>
+    <comment>League label</comment>
+  </data>
+  <data name="NoCharactersFoundForAccount" xml:space="preserve">
+    <value>Aucun personnage trouvé pour le compte {0}</value>
+    <comment>No characters found error</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+    <comment>OK button</comment>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Veuillez patienter...</value>
+    <comment>Please wait label</comment>
+  </data>
+  <data name="PreviewLabel" xml:space="preserve">
+    <value>Aperçu (valeurs factices)</value>
+    <comment>Preview label</comment>
+  </data>
+  <data name="SessionId" xml:space="preserve">
+    <value>Id de session</value>
+    <comment>Session Id label</comment>
+  </data>
+  <data name="SessionIdCorrect" xml:space="preserve">
+    <value>Le cookie Session Id est correct</value>
+    <comment>Session Id correct label</comment>
+  </data>
+  <data name="SessionIdIncorrect" xml:space="preserve">
+    <value>Le cookie Session Id est incorrect</value>
+    <comment>Session Id error label</comment>
+  </data>
+  <data name="SessionIdMissing" xml:space="preserve">
+    <value>Le cookie Session Id est recommandé</value>
+    <comment>Session Id warning label</comment>
+  </data>
+  <data name="ShowAdvancedOptions" xml:space="preserve">
+    <value>Afficher les options avancées</value>
+    <comment>Show advanced options label</comment>
+  </data>
+  <data name="ShowDeadsAhead" xml:space="preserve">
+    <value>Afficher le nombre de morts devant</value>
+    <comment>Show deads ahead checkbox label</comment>
+  </data>
+  <data name="ShowExperienceAhead" xml:space="preserve">
+    <value>Afficher les points d'expérience manquants pour gagner un rang</value>
+    <comment>Show experience ahead checkbox label</comment>
+  </data>
+  <data name="ShowExperienceBehind" xml:space="preserve">
+    <value>Afficher les points d'expérience actuels pour perdre un rang</value>
+    <comment>Show experience behind checkbox label</comment>
+  </data>
+  <data name="ShowProgressBar" xml:space="preserve">
+    <value>Afficher la barre de progression</value>
+    <comment>Show progress bar checkbox label</comment>
+  </data>
+  <data name="ShowRankByClass" xml:space="preserve">
+    <value>Afficher le classement par classe</value>
+    <comment>Show rank by class checkbox label</comment>
+  </data>
+  <data name="UnableToOpenUrl" xml:space="preserve">
+    <value>Impossible d'ouvrir l'URL</value>
+    <comment>Link error label</comment>
+  </data>
+  <data name="UnableToRetrieveCharacters" xml:space="preserve">
+    <value>Impossible de récupérer les personnages</value>
+    <comment>Characters retrieval error</comment>
+  </data>
+</root>
