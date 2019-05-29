@@ -27,7 +27,6 @@ namespace PoeRankingTracker
             InitializeFontAndOptions();
             InitializeLanguagesCombo();
             InitializeLeagueRaceCombo();
-            CenterPanel();
         }
 
         private void InitializeTranslations()
@@ -120,6 +119,7 @@ namespace PoeRankingTracker
             errorKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyError_16x.GetHicon());
             await API.Instance.SetSessionId(Properties.Settings.Default.SessionId).ConfigureAwait(true);
             CheckSessionId();
+            CenterPanel();
         }
 
         private async void InitializeLeagueRaceCombo()
@@ -376,6 +376,7 @@ namespace PoeRankingTracker
             {
                 tableLayoutPanel.Font = fontDialog.Font;
                 tableLayoutPanel.ForeColor = fontDialog.Color;
+                progressBar.SetColor(fontDialog.Color);
                 Properties.Settings.Default.Font = fontDialog.Font;
                 Properties.Settings.Default.FontColor = fontDialog.Color;
                 CenterPanel();
@@ -410,7 +411,7 @@ namespace PoeRankingTracker
 
         private void CheckSessionId()
         {
-            if (API.Instance.SessionIdCorrect())
+            if (API.Instance.SessionIdCorrect() && sessionIdTextBox.Text.Length > 0)
             {
                 errorKeyProvider.SetError(sessionIdTextBox, "");
                 warningKeyProvider.SetError(sessionIdTextBox, "");
