@@ -4,17 +4,14 @@ using System;
 
 namespace PoeRankingTracker.Services
 {
-    public class LadderService
+    public class LadderService : ILadderService
     {
-        private static readonly Lazy<LadderService> lazy = new Lazy<LadderService>(() => new LadderService());
-        public static LadderService Instance { get { return lazy.Value; } }
+        private static readonly Lazy<ILadderService> lazy = new Lazy<ILadderService>(() => new LadderService());
+        public static ILadderService Instance { get { return lazy.Value; } }
 
         public const int defaultRank = 15000;
 
-        private LadderService()
-        {
-
-        }
+        private LadderService() {}
 
         public int GetRank(Ladder ladder, string characterName)
         {

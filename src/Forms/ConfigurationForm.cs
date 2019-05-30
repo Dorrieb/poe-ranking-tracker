@@ -1,6 +1,6 @@
 ﻿using PoeRankingTracker.Models;
-using PoeRankingTracker.Net;
 using PoeRankingTracker.Resources.Translations;
+using PoeRankingTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -117,7 +117,7 @@ namespace PoeRankingTracker
             infoKeyProvider.Icon = Icon.FromHandle(Properties.Resources.Key_16x.GetHicon());
             warningKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyWarning_16x.GetHicon());
             errorKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyError_16x.GetHicon());
-            await API.Instance.SetSessionId(Properties.Settings.Default.SessionId).ConfigureAwait(true);
+            await Api.Instance.SetSessionId(Properties.Settings.Default.SessionId).ConfigureAwait(true);
             CheckSessionId();
             CenterPanel();
         }
@@ -126,7 +126,7 @@ namespace PoeRankingTracker
         {
             try
             {
-                List<League> leagues = await API.Instance.GetLeaguesAsync().ConfigureAwait(true);
+                List<League> leagues = await Api.Instance.GetLeaguesAsync().ConfigureAwait(true);
                 CheckSessionId();
 
                 errorProvider.SetError(leagueRaceCombo, "");
@@ -168,7 +168,7 @@ namespace PoeRankingTracker
 
             if (selectedLeague == null && Properties.Settings.Default.LeagueId.Length > 0)
             {
-                var league = await API.Instance.GetLeagueAsync(Properties.Settings.Default.LeagueId).ConfigureAwait(true);
+                var league = await Api.Instance.GetLeagueAsync(Properties.Settings.Default.LeagueId).ConfigureAwait(true);
                 if (league != null)
                 {
                     var item = new ComboBoxItem
@@ -219,7 +219,7 @@ namespace PoeRankingTracker
             if (startLength == cb.Text.Length)
             {
                 var leagueId = cb.Text;
-                                var league = await API.Instance.GetLeagueAsync(leagueId).ConfigureAwait(true);
+                                var league = await Api.Instance.GetLeagueAsync(leagueId).ConfigureAwait(true);
                 if (league == null)
                 {
                     errorProvider.SetError(leagueRaceCombo, Strings.FailedToRetrieveLeague);
@@ -287,7 +287,7 @@ namespace PoeRankingTracker
             charactersComboBox.Items.Clear();
             if (selectedLeague != null && accountName != null && accountName.Length > 0)
             {
-                Ladder ladder = await API.Instance.GetLadderAsync(selectedLeague.Id, accountName).ConfigureAwait(true);
+                Ladder ladder = await Api.Instance.GetLadderAsync(selectedLeague.Id, accountName).ConfigureAwait(true);
                 try
                 {
                     selectedEntry = null;
@@ -421,7 +421,7 @@ namespace PoeRankingTracker
             if (startLength == tb.Text.Length)
             {
                 Properties.Settings.Default.SessionId = tb.Text;
-                await API.Instance.SetSessionId(tb.Text).ConfigureAwait(true);
+                await Api.Instance.SetSessionId(tb.Text).ConfigureAwait(true);
                 CheckSessionId();
             }
         }
@@ -474,7 +474,7 @@ namespace PoeRankingTracker
 
         private void CheckSessionId()
         {
-            if (API.Instance.SessionIdCorrect() && sessionIdTextBox.Text.Length > 0)
+            if (Api.Instance.SessionIdCorrect() && sessionIdTextBox.Text.Length > 0)
             {
                 errorKeyProvider.SetError(sessionIdTextBox, "");
                 warningKeyProvider.SetError(sessionIdTextBox, "");

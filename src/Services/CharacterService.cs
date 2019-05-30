@@ -4,14 +4,12 @@ using System.Collections.Generic;
 
 namespace PoeRankingTracker.Services
 {
-    public class CharacterService
+    public class CharacterService : ICharacterService
     {
-        private static readonly Lazy<CharacterService> lazy = new Lazy<CharacterService>(() => new CharacterService());
-        public static CharacterService Instance { get { return lazy.Value; } }
+        private static readonly Lazy<ICharacterService> lazy = new Lazy<ICharacterService>(() => new CharacterService());
+        public static ICharacterService Instance { get { return lazy.Value; } }
 
-        private CharacterService()
-        {
-        }
+        private CharacterService() {}
 
         public int GetRankByClass(List<Entry> entries, Entry entry)
         {

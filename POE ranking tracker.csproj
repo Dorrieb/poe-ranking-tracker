@@ -131,10 +131,10 @@
     <Compile Include="src\Components\TrackerProgressBar.Designer.cs">
       <DependentUpon>TrackerProgressBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Exceptions\RuleNotInitializedException.cs" />
     <Compile Include="src\Models\Account.cs" />
     <Compile Include="src\Models\Challenges.cs" />
-    <Compile Include="src\Net\API.cs" />
+    <Compile Include="src\Services\IApi.cs" />
+    <Compile Include="src\Services\Api.cs" />
     <Compile Include="src\Formatters\LadderFormatter.cs" />
     <Compile Include="src\Models\Character.cs" />
     <Compile Include="src\Models\Entry.cs" />
@@ -161,6 +161,8 @@
     <Compile Include="src\Models\LeagueRule.cs" />
     <Compile Include="src\Forms\RankingTrackerContext.cs" />
     <Compile Include="src\Services\CharacterService.cs" />
+    <Compile Include="src\Services\ICharacterService.cs" />
+    <Compile Include="src\Services\ILadderService.cs" />
     <Compile Include="src\Services\LadderService.cs" />
     <Compile Include="Resources\Translations\Strings1.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -1,5 +1,4 @@
 ﻿using PoeRankingTracker.Models;
-using PoeRankingTracker.Net;
 using PoeRankingTracker.Resources.Translations;
 using PoeRankingTracker.Services;
 using System;
@@ -47,9 +46,9 @@ namespace PoeRankingTracker
 
         private void InitializeProgressEvents()
         {
-            API.Instance.GetEntriesStarted += ProgressStarted;
-            API.Instance.GetEntriesIncremented += ProgressIncremented;
-            API.Instance.GetEntriesEnded += ProgressEnded;
+            Api.Instance.GetEntriesStarted += ProgressStarted;
+            Api.Instance.GetEntriesIncremented += ProgressIncremented;
+            Api.Instance.GetEntriesEnded += ProgressEnded;
         }
 
         private void ProgressStarted(object sender, ApiEventArgs args)
@@ -121,7 +120,7 @@ namespace PoeRankingTracker
             logger.Debug("RetrieveData");
             timer?.Stop();
 
-            List<Entry> entries = await API.Instance.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name).ConfigureAwait(true);
+            List<Entry> entries = await Api.Instance.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name).ConfigureAwait(true);
             ComputeRank(entries);
             ComputeRankByClass(entries);
             ComputeNumberOfDeadsAhead(entries);
@@ -276,7 +275,7 @@ namespace PoeRankingTracker
             if (!Visible)
             {
                 timer.Stop();
-                API.Instance.CancelTasks();
+                Api.Instance.CancelTasks();
             }
         }
 

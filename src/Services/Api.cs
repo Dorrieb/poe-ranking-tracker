@@ -1,5 +1,4 @@
 ﻿using PoeRankingTracker.Models;
-using PoeRankingTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,12 +11,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace PoeRankingTracker.Net
+namespace PoeRankingTracker.Services
 {
-    public class API : IDisposable
+    public class Api : IApi, IDisposable
     {
-        private static readonly Lazy<API> lazy = new Lazy<API>(() => new API());
-        public static API Instance { get { return lazy.Value; } }
+        private static readonly Lazy<IApi> lazy = new Lazy<IApi>(() => new Api());
+        public static IApi Instance { get { return lazy.Value; } }
         private readonly CookieContainer cookieContainer = new CookieContainer();
         private HttpClient client;
         private readonly Uri baseUri = new Uri(Properties.Settings.Default.BaseUri);
@@ -30,7 +29,7 @@ namespace PoeRankingTracker.Net
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private bool sessionIdCorrect = false;
 
-        private API()
+        private Api()
         {
             CreateClient();
         }
