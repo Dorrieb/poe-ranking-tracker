@@ -5,7 +5,7 @@ namespace PoeRankingTracker.Components
 {
     public partial class TrackerProgressBar : ProgressBar
     {
-        private Brush brush;
+        private Brush brush = new SolidBrush(Color.Black);
 
         public TrackerProgressBar()
         {
