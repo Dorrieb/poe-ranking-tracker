@@ -10,7 +10,7 @@ It periodically polls ladder information to display the rank and progress inform
 1. Choose a language from the "Language" drop-down list
    1. Default language is computed from your OS language
 2. Select a league from the "League/Race" drop-down list
-   1. You can enter the name of a private league instead selecting a public league.
+   1. You can enter the name of a private league instead of selecting a public league.
 2. Fill in your account name
 3. Select a character from the "Character Name" drop-down list
    1. The characters list is populated after selecting a league and filling your account name
