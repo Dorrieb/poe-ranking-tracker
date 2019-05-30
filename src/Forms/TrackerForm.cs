@@ -49,6 +49,7 @@ namespace PoeRankingTracker
         {
             API.Instance.GetEntriesStarted += ProgressStarted;
             API.Instance.GetEntriesIncremented += ProgressIncremented;
+            API.Instance.GetEntriesEnded += ProgressEnded;
         }
 
         private void ProgressStarted(object sender, ApiEventArgs args)
@@ -65,6 +66,14 @@ namespace PoeRankingTracker
             progressBar.Invoke(new MethodInvoker(delegate
             {
                 progressBar.PerformStep();
+            }));
+        }
+
+        private void ProgressEnded(object sender, ApiEventArgs args)
+        {
+            progressBar.Invoke(new MethodInvoker(delegate
+            {
+                progressBar.Value = 0;
             }));
         }
 
