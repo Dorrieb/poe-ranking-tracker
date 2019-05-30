@@ -165,7 +165,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="rank.ico" />
-    <None Include="POE ranking tracker_TemporaryKey.pfx" />
     <None Include="Resources\Icons\KeyWarning_16x.png" />
     <None Include="Resources\Icons\KeyError_16x.png" />
     <None Include="Resources\Icons\Key_16x.png" />
