@@ -139,19 +139,53 @@ namespace PoeRankingTracker
                         Value = league,
                     };
                     leagueRaceCombo.Items.Add(item);
-                    if (league.Id == Properties.Settings.Default.LeagueId)
-                    {
-                        leagueRaceCombo.SelectedItem = item;
-                        selectedLeague = league;
-                        leagueUrlLink.Enabled = true;
-                    }
                 }
+
+                SetSelectedLeague();
             }
             catch (HttpRequestException e)
             {
                 logger.Error(e, "Failed to retrieve leagues");
                 errorProvider.SetError(leagueRaceCombo, Strings.FailedToRetrieveLeagues);
             }
+        }
+
+        private async void SetSelectedLeague()
+        {
+            selectedLeague = null;
+            foreach (var item in leagueRaceCombo.Items)
+            {
+                var league = (item as ComboBoxItem).Value as League;
+                if (league.Id == Properties.Settings.Default.LeagueId)
+                {
+                    leagueRaceCombo.SelectedIndexChanged -= LeagueRaceCombo_SelectedIndexChanged;
+                    leagueRaceCombo.SelectedItem = item;
+                    leagueRaceCombo.SelectedIndexChanged += LeagueRaceCombo_SelectedIndexChanged;
+                    selectedLeague = league;
+                    leagueUrlLink.Enabled = true;
+                }
+            }
+
+            if (selectedLeague == null && Properties.Settings.Default.LeagueId.Length > 0)
+            {
+                var league = await API.Instance.GetLeagueAsync(Properties.Settings.Default.LeagueId).ConfigureAwait(true);
+                if (league != null)
+                {
+                    var item = new ComboBoxItem
+                    {
+                        Text = league.Id,
+                        Value = league,
+                    };
+                    leagueRaceCombo.Items.Add(item);
+                    leagueRaceCombo.SelectedIndexChanged -= LeagueRaceCombo_SelectedIndexChanged;
+                    leagueRaceCombo.SelectedItem = item;
+                    leagueRaceCombo.SelectedIndexChanged += LeagueRaceCombo_SelectedIndexChanged;
+                    selectedLeague = league;
+                    leagueUrlLink.Enabled = false;
+                }
+            }
+
+            InitializeCharactersList();
         }
 
         private void BackgroundColorButton_Click(object sender, EventArgs e)
@@ -174,6 +208,35 @@ namespace PoeRankingTracker
             leagueUrlLink.Enabled = true;
 
             InitializeCharactersList();
+        }
+
+        private async void LeagueRaceCombo_TextUpdate(object sender, EventArgs e)
+        {
+            ComboBox cb = (ComboBox)sender;
+            int startLength = cb.Text.Length;
+
+            await Task.Delay(Properties.Settings.Default.TextChangedDelay).ConfigureAwait(true);
+            if (startLength == cb.Text.Length)
+            {
+                var leagueId = cb.Text;
+                                var league = await API.Instance.GetLeagueAsync(leagueId).ConfigureAwait(true);
+                if (league == null)
+                {
+                    errorProvider.SetError(leagueRaceCombo, Strings.FailedToRetrieveLeague);
+                }
+                else
+                {
+                    selectedLeague = league;
+
+                    leagueUrlLink.Enabled = false;
+
+                    errorProvider.SetError(leagueRaceCombo, "");
+
+                    Properties.Settings.Default.LeagueId = selectedLeague.Id;
+                }
+
+                InitializeCharactersList();
+            }
         }
 
         private void CheckIfOkButtonCanBeEnabled()
@@ -221,12 +284,12 @@ namespace PoeRankingTracker
 
         private async void InitializeCharactersList()
         {
+            charactersComboBox.Items.Clear();
             if (selectedLeague != null && accountName != null && accountName.Length > 0)
             {
                 Ladder ladder = await API.Instance.GetLadderAsync(selectedLeague.Id, accountName).ConfigureAwait(true);
                 try
                 {
-                    charactersComboBox.Items.Clear();
                     selectedEntry = null;
                     CheckIfOkButtonCanBeEnabled();
                     if (ladder == null || (ladder.Entries != null && ladder.Entries.Count == 0))

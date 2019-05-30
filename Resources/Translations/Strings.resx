@@ -153,6 +153,10 @@
     <value>XP to lose rank</value>
     <comment>Experience to lose rank label (preview and tracker)</comment>
   </data>
+  <data name="FailedToRetrieveLeague" xml:space="preserve">
+    <value>Failed to retrieve league</value>
+    <comment>Failed to retrieve league error</comment>
+  </data>
   <data name="FailedToRetrieveLeagues" xml:space="preserve">
     <value>Failed to retrieve leagues</value>
     <comment>Leagues retrieval error</comment>

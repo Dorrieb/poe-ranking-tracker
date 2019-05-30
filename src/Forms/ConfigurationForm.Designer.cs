@@ -99,13 +99,13 @@
             // 
             // leagueRaceCombo
             // 
-            this.leagueRaceCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.leagueRaceCombo.FormattingEnabled = true;
             this.leagueRaceCombo.Location = new System.Drawing.Point(96, 41);
             this.leagueRaceCombo.Name = "leagueRaceCombo";
             this.leagueRaceCombo.Size = new System.Drawing.Size(234, 21);
             this.leagueRaceCombo.TabIndex = 1;
             this.leagueRaceCombo.SelectedIndexChanged += new System.EventHandler(this.LeagueRaceCombo_SelectedIndexChanged);
+            this.leagueRaceCombo.TextUpdate += new System.EventHandler(this.LeagueRaceCombo_TextUpdate);
             // 
             // leagueRaceLabel
             // 
@@ -195,7 +195,7 @@
             // 
             this.leagueUrlLink.AutoSize = true;
             this.leagueUrlLink.Enabled = false;
-            this.leagueUrlLink.Location = new System.Drawing.Point(342, 44);
+            this.leagueUrlLink.Location = new System.Drawing.Point(348, 44);
             this.leagueUrlLink.Name = "leagueUrlLink";
             this.leagueUrlLink.Size = new System.Drawing.Size(24, 13);
             this.leagueUrlLink.TabIndex = 8;

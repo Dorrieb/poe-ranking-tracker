@@ -134,6 +134,23 @@ namespace PoeRankingTracker.Net
             return leagues;
         }
 
+        public async Task<League> GetLeagueAsync(string leagueId)
+        {
+            League league = null;
+
+            if (leagueId.Length > 0)
+            {
+                var uri = new Uri(baseUri, $"{Properties.Settings.Default.LeaguesPath}/{leagueId}");
+                HttpResponseMessage response = await ProcessGetRequest(uri, false).ConfigureAwait(false);
+                if (response != null)
+                {
+                    league = await response.Content.ReadAsAsync<League>().ConfigureAwait(false);
+                }
+            }
+
+            return league;
+        }
+
         public async Task<Ladder> GetLadderAsync(string leagueId, string accountName)
         {
             Ladder ladder = null;

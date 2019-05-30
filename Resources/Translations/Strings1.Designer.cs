@@ -142,6 +142,15 @@ namespace PoeRankingTracker.Resources.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to retrieve league.
+        /// </summary>
+        public static string FailedToRetrieveLeague {
+            get {
+                return ResourceManager.GetString("FailedToRetrieveLeague", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to retrieve leagues.
         /// </summary>
         public static string FailedToRetrieveLeagues {
