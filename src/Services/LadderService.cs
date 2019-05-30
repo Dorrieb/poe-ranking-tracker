@@ -1,5 +1,4 @@
-﻿using PoeRankingTracker.Exceptions;
-using PoeRankingTracker.Models;
+﻿using PoeRankingTracker.Models;
 using System;
 
 namespace PoeRankingTracker.Services
