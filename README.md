@@ -20,7 +20,7 @@ It periodically polls ladder information to display the rank and progress inform
    1. Show rank by class : display your character rank according to its ascendancy
    2. Show number of deads/retired ahead : display the number of all deads or retired characters in front of you.
    3. Show missing experience points to gain one rank : display the experience points number your character lacks to gain a rank. When it reaches zero you gain a rank.
-   4. Show present experience points to gain one rank : display the experience points number your character is above to the previous character. When it reaches zero, you lose a rank.
+   4. Show present experience points to lose one rank : display the experience points number your character is above to the previous character. When it reaches zero, you lose a rank.
    5. Show progress bar : display a progress bar showing the progress of the refresh process.
 6. Modify the colors of the tracker and see your changes in the preview panel
    1. You can alter the font (name and color)
