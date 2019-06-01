@@ -5,12 +5,7 @@ namespace PoeRankingTracker.Services
 {
     public class LadderService : ILadderService
     {
-        private static readonly Lazy<ILadderService> lazy = new Lazy<ILadderService>(() => new LadderService());
-        public static ILadderService Instance { get { return lazy.Value; } }
-
         public const int defaultRank = 15000;
-
-        private LadderService() {}
 
         public int GetRank(Ladder ladder, string characterName)
         {

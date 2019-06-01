@@ -73,9 +73,39 @@ namespace PoeRankingTrackerTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] Ladder96 {
+            get {
+                object obj = ResourceManager.GetObject("Ladder96", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] LadderNoEntries {
             get {
                 object obj = ResourceManager.GetObject("LadderNoEntries", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] League {
+            get {
+                object obj = ResourceManager.GetObject("League", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] LeagueWithEntries {
+            get {
+                object obj = ResourceManager.GetObject("LeagueWithEntries", resourceCulture);
                 return ((byte[])(obj));
             }
         }

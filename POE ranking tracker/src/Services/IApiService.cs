@@ -1,11 +1,12 @@
-﻿using PoeRankingTracker.Models;
+﻿using PoeRankingTracker.Events;
+using PoeRankingTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PoeRankingTracker.Services
 {
-    public interface IApi
+    public interface IApiService
     {
         Task SetSessionId(string sessionId);
         Task<List<League>> GetLeaguesAsync();

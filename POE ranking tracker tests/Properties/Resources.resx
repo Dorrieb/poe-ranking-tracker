@@ -121,7 +121,16 @@
   <data name="Ladder" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Data\Ladder.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Ladder96" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Data\Ladder96.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="LadderNoEntries" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Data\LadderNoEntries.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="League" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Data\League.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="LeagueWithEntries" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Data\LeagueWithEntries.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

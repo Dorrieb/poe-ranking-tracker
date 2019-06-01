@@ -1,4 +1,4 @@
-﻿namespace PoeRankingTracker
+﻿namespace PoeRankingTracker.Forms
 {
     partial class TrackerForm
     {

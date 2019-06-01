@@ -6,11 +6,6 @@ namespace PoeRankingTracker.Services
 {
     public class CharacterService : ICharacterService
     {
-        private static readonly Lazy<ICharacterService> lazy = new Lazy<ICharacterService>(() => new CharacterService());
-        public static ICharacterService Instance { get { return lazy.Value; } }
-
-        private CharacterService() {}
-
         public int GetRankByClass(List<Entry> entries, Entry entry)
         {
             var rank = 1;
@@ -81,7 +76,7 @@ namespace PoeRankingTracker.Services
             long n = 0;
             int i = entries.IndexOf(entry);
             var data = entries.ToArray();
-            if (i > 0)
+            if (i > 0 && i < data.Length - 1)
             {
                 n = GetExperienceDifference(entry, data[i + 1]);
             }

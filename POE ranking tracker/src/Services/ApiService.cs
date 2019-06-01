@@ -1,4 +1,5 @@
-﻿using PoeRankingTracker.Models;
+﻿using PoeRankingTracker.Events;
+using PoeRankingTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,10 +14,8 @@ using System.Timers;
 
 namespace PoeRankingTracker.Services
 {
-    public class Api : IApi, IDisposable
+    public class ApiService : IApiService, IDisposable
     {
-        private static readonly Lazy<IApi> lazy = new Lazy<IApi>(() => new Api());
-        public static IApi Instance { get { return lazy.Value; } }
         private readonly CookieContainer cookieContainer = new CookieContainer();
         private HttpClient client;
         private readonly Uri baseUri = new Uri(Properties.Settings.Default.BaseUri);
@@ -28,9 +27,11 @@ namespace PoeRankingTracker.Services
         private int semaphoreNumber;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private bool sessionIdCorrect = false;
+        private readonly ILadderService ladderService;
 
-        private Api()
+        public ApiService(ILadderService ladderService)
         {
+            this.ladderService = ladderService;
             CreateClient();
         }
 
@@ -187,7 +188,7 @@ namespace PoeRankingTracker.Services
             try
             {
                 Ladder ladder = await GetLadderAsync(leagueId, accountName).ConfigureAwait(true);
-                int rank = LadderService.Instance.GetRank(ladder, characterName);
+                int rank = ladderService.GetRank(ladder, characterName);
                 int limit = 200;
                 int offset = -1;
                 int tasksNumber = (int)Math.Ceiling((double)rank / limit);
@@ -405,8 +406,8 @@ namespace PoeRankingTracker.Services
             if (disposing)
             {
                 client.Dispose();
-                timer.Dispose();
-                semaphore.Dispose();
+                timer?.Dispose();
+                semaphore?.Dispose();
                 tokenSource.Dispose();
             }
         }
@@ -420,10 +421,5 @@ namespace PoeRankingTracker.Services
         public event EventHandler<ApiEventArgs> GetEntriesStarted;
         public event EventHandler<ApiEventArgs> GetEntriesIncremented;
         public event EventHandler<ApiEventArgs> GetEntriesEnded;
-    }
-
-    public class ApiEventArgs : EventArgs
-    {
-        public int Value { get; set; }
     }
 }

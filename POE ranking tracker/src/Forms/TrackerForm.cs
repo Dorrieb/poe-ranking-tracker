@@ -1,4 +1,5 @@
-﻿using PoeRankingTracker.Models;
+﻿using PoeRankingTracker.Events;
+using PoeRankingTracker.Models;
 using PoeRankingTracker.Resources.Translations;
 using PoeRankingTracker.Services;
 using System;
@@ -8,7 +9,7 @@ using System.Globalization;
 using System.Timers;
 using System.Windows.Forms;
 
-namespace PoeRankingTracker
+namespace PoeRankingTracker.Forms
 {
     public partial class TrackerForm : Form
     {
@@ -16,9 +17,13 @@ namespace PoeRankingTracker
         private System.Timers.Timer timer = new System.Timers.Timer(Properties.Settings.Default.TimerInterval);
         private TrackerConfiguration configuration;
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private IApiService api;
+        private ICharacterService characterService;
 
-        public TrackerForm()
+        public TrackerForm(IApiService api, ICharacterService characterService)
         {
+            this.api = api;
+            this.characterService = characterService;
             InitializeComponent();
             InitializePosition();
             InitializeProgressEvents();
@@ -46,9 +51,9 @@ namespace PoeRankingTracker
 
         private void InitializeProgressEvents()
         {
-            Api.Instance.GetEntriesStarted += ProgressStarted;
-            Api.Instance.GetEntriesIncremented += ProgressIncremented;
-            Api.Instance.GetEntriesEnded += ProgressEnded;
+            api.GetEntriesStarted += ProgressStarted;
+            api.GetEntriesIncremented += ProgressIncremented;
+            api.GetEntriesEnded += ProgressEnded;
         }
 
         private void ProgressStarted(object sender, ApiEventArgs args)
@@ -120,7 +125,7 @@ namespace PoeRankingTracker
             logger.Debug("RetrieveData");
             timer?.Stop();
 
-            List<Entry> entries = await Api.Instance.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name).ConfigureAwait(true);
+            List<Entry> entries = await api.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name).ConfigureAwait(true);
             ComputeRank(entries);
             ComputeRankByClass(entries);
             ComputeNumberOfDeadsAhead(entries);
@@ -132,7 +137,7 @@ namespace PoeRankingTracker
 
         private void ComputeRank(List<Entry> entries)
         {
-            DisplayRank(CharacterService.Instance.GetRank(entries, Properties.Settings.Default.CharacterName));
+            DisplayRank(characterService.GetRank(entries, Properties.Settings.Default.CharacterName));
         }
 
         private void DisplayRank(int rank)
@@ -147,7 +152,7 @@ namespace PoeRankingTracker
         {
             if (Properties.Settings.Default.ShowRankByClass)
             {
-                var rank = CharacterService.Instance.GetRankByClass(entries, configuration.Entry);
+                var rank = characterService.GetRankByClass(entries, configuration.Entry);
                 DisplayRankByClass(rank);
             }
         }
@@ -167,7 +172,7 @@ namespace PoeRankingTracker
         {
             if (Properties.Settings.Default.ShowDeadsAhead)
             {
-                var n = CharacterService.Instance.GetNumbersOfDeadsAhead(entries, configuration.Entry);
+                var n = characterService.GetNumbersOfDeadsAhead(entries, configuration.Entry);
                 DisplayNumberOfDeadsAhead(n);
             }
         }
@@ -187,7 +192,7 @@ namespace PoeRankingTracker
         {
             if (Properties.Settings.Default.ShowExperienceAhead)
             {
-                long n = CharacterService.Instance.GetExperienceAhead(entries, configuration.Entry);
+                long n = characterService.GetExperienceAhead(entries, configuration.Entry);
                 DisplayExperienceAhead(n);
             }
         }
@@ -207,7 +212,7 @@ namespace PoeRankingTracker
         {
             if (Properties.Settings.Default.ShowExperienceBehind)
             {
-                long n = CharacterService.Instance.GetExperienceBehind(entries, configuration.Entry);
+                long n = characterService.GetExperienceBehind(entries, configuration.Entry);
                 DisplayExperienceBehind(n);
             }
         }
@@ -251,7 +256,7 @@ namespace PoeRankingTracker
         private void TrackerForm_MouseDoubleClick(object sender, System.EventArgs e)
         {
             timer.Stop();
-            RankingTrackerContext.currentContext.ShowConfigurationForm();
+            RankingTrackerContext.CurrentContext.ShowConfigurationForm();
         }
 
         private void TrackerForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -275,7 +280,7 @@ namespace PoeRankingTracker
             if (!Visible)
             {
                 timer.Stop();
-                Api.Instance.CancelTasks();
+                api.CancelTasks();
             }
         }
 
