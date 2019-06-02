@@ -88,7 +88,6 @@
     <Compile Include="src\Models\LeagueTest.cs" />
     <Compile Include="src\Models\RuleApiTest.cs" />
     <Compile Include="src\Models\TrackerConfigurationTest.cs" />
-    <Compile Include="src\Services\ApiServiceTest.cs" />
     <Compile Include="src\Services\CharacterServiceTest.cs" />
     <Compile Include="src\Services\LadderServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

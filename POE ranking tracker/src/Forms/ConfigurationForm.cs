@@ -18,11 +18,11 @@ namespace PoeRankingTracker.Forms
         private string accountName = Properties.Settings.Default.AccountName;
         private Entry selectedEntry = null;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        private IApiService api;
+        private IHttpClientService httpClientService;
 
-        public ConfigurationForm(IApiService api)
+        public ConfigurationForm(IHttpClientService httpClientService)
         {
-            this.api = api;
+            this.httpClientService = httpClientService;
             InitializeComponent();
             InitializeTranslations();
             InitializePosition();
@@ -119,7 +119,7 @@ namespace PoeRankingTracker.Forms
             infoKeyProvider.Icon = Icon.FromHandle(Properties.Resources.Key_16x.GetHicon());
             warningKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyWarning_16x.GetHicon());
             errorKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyError_16x.GetHicon());
-            await api.SetSessionId(Properties.Settings.Default.SessionId).ConfigureAwait(true);
+            await httpClientService.SetSessionId(Properties.Settings.Default.SessionId).ConfigureAwait(true);
             CheckSessionId();
             CenterPanel();
         }
@@ -128,7 +128,7 @@ namespace PoeRankingTracker.Forms
         {
             try
             {
-                List<League> leagues = await api.GetLeaguesAsync().ConfigureAwait(true);
+                List<League> leagues = await httpClientService.GetLeaguesAsync().ConfigureAwait(true);
                 CheckSessionId();
 
                 errorProvider.SetError(leagueRaceCombo, "");
@@ -170,7 +170,7 @@ namespace PoeRankingTracker.Forms
 
             if (selectedLeague == null && Properties.Settings.Default.LeagueId.Length > 0)
             {
-                var league = await api.GetLeagueAsync(Properties.Settings.Default.LeagueId).ConfigureAwait(true);
+                var league = await httpClientService.GetLeagueAsync(Properties.Settings.Default.LeagueId).ConfigureAwait(true);
                 if (league != null)
                 {
                     var item = new ComboBoxItem
@@ -221,7 +221,7 @@ namespace PoeRankingTracker.Forms
             if (startLength == cb.Text.Length)
             {
                 var leagueId = cb.Text;
-                                var league = await api.GetLeagueAsync(leagueId).ConfigureAwait(true);
+                                var league = await httpClientService.GetLeagueAsync(leagueId).ConfigureAwait(true);
                 if (league == null)
                 {
                     errorProvider.SetError(leagueRaceCombo, Strings.FailedToRetrieveLeague);
@@ -289,7 +289,7 @@ namespace PoeRankingTracker.Forms
             charactersComboBox.Items.Clear();
             if (selectedLeague != null && accountName != null && accountName.Length > 0)
             {
-                Ladder ladder = await api.GetLadderAsync(selectedLeague.Id, accountName).ConfigureAwait(true);
+                Ladder ladder = await httpClientService.GetLadderAsync(selectedLeague.Id, accountName).ConfigureAwait(true);
                 try
                 {
                     selectedEntry = null;
@@ -423,7 +423,7 @@ namespace PoeRankingTracker.Forms
             if (startLength == tb.Text.Length)
             {
                 Properties.Settings.Default.SessionId = tb.Text;
-                await api.SetSessionId(tb.Text).ConfigureAwait(true);
+                await httpClientService.SetSessionId(tb.Text).ConfigureAwait(true);
                 CheckSessionId();
             }
         }
@@ -476,7 +476,7 @@ namespace PoeRankingTracker.Forms
 
         private void CheckSessionId()
         {
-            if (api.SessionIdCorrect() && sessionIdTextBox.Text.Length > 0)
+            if (httpClientService.SessionIdCorrect() && sessionIdTextBox.Text.Length > 0)
             {
                 errorKeyProvider.SetError(sessionIdTextBox, "");
                 warningKeyProvider.SetError(sessionIdTextBox, "");

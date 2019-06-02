@@ -17,12 +17,12 @@ namespace PoeRankingTracker.Forms
         private System.Timers.Timer timer = new System.Timers.Timer(Properties.Settings.Default.TimerInterval);
         private TrackerConfiguration configuration;
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        private IApiService api;
+        private IHttpClientService httpClientService;
         private ICharacterService characterService;
 
-        public TrackerForm(IApiService api, ICharacterService characterService)
+        public TrackerForm(IHttpClientService httpClientService, ICharacterService characterService)
         {
-            this.api = api;
+            this.httpClientService = httpClientService;
             this.characterService = characterService;
             InitializeComponent();
             InitializePosition();
@@ -51,9 +51,9 @@ namespace PoeRankingTracker.Forms
 
         private void InitializeProgressEvents()
         {
-            api.GetEntriesStarted += ProgressStarted;
-            api.GetEntriesIncremented += ProgressIncremented;
-            api.GetEntriesEnded += ProgressEnded;
+            httpClientService.GetEntriesStarted += ProgressStarted;
+            httpClientService.GetEntriesIncremented += ProgressIncremented;
+            httpClientService.GetEntriesEnded += ProgressEnded;
         }
 
         private void ProgressStarted(object sender, ApiEventArgs args)
@@ -125,7 +125,7 @@ namespace PoeRankingTracker.Forms
             logger.Debug("RetrieveData");
             timer?.Stop();
 
-            List<Entry> entries = await api.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name).ConfigureAwait(true);
+            List<Entry> entries = await httpClientService.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name).ConfigureAwait(true);
             ComputeRank(entries);
             ComputeRankByClass(entries);
             ComputeNumberOfDeadsAhead(entries);
@@ -280,7 +280,7 @@ namespace PoeRankingTracker.Forms
             if (!Visible)
             {
                 timer.Stop();
-                api.CancelTasks();
+                httpClientService.CancelPendingRequests();
             }
         }
 

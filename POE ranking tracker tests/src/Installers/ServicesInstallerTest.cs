@@ -29,16 +29,21 @@ namespace PoeRankingTrackerTests.Installers
             var handlers = GetServicesHandlers();
 
             Assert.AreNotEqual(0, all.Length);
-            CollectionAssert.AreEqual(all, handlers);
+            CollectionAssert.AreEquivalent(all, handlers);
         }
         
         [TestMethod]
         public void AllServicesAreRegistered()
         {
-            var all = GetPublicClassesFromApplicationAssembly(c => c.Is<IApiService>() || c.Is<ICharacterService>() || c.Is<ILadderService>());
+            var all = GetPublicClassesFromApplicationAssembly(
+                c => c.Is<ICharacterService>() ||
+                     c.Is<IHttpClientService>() ||
+                     c.Is<ILadderService>() ||
+                     c.Is<ISemaphoreService>()
+            );
             var registered = GetImplementationServicesTypes();
 
-            CollectionAssert.AreEqual(all, registered);
+            CollectionAssert.AreEquivalent(all, registered);
         }
 
         [TestMethod]
@@ -47,7 +52,7 @@ namespace PoeRankingTrackerTests.Installers
             var all = GetPublicClassesFromApplicationAssembly(c => c.Name.EndsWith("Service"));
             var registered = GetImplementationServicesTypes();
 
-            CollectionAssert.AreEqual(all, registered);
+            CollectionAssert.AreEquivalent(all, registered);
         }
 
         [TestMethod]
@@ -55,7 +60,7 @@ namespace PoeRankingTrackerTests.Installers
         {
             var all = GetPublicClassesFromApplicationAssembly(c => c.Namespace.Contains("Services"));
             var registered = GetImplementationServicesTypes();
-            CollectionAssert.AreEqual(all, registered);
+            CollectionAssert.AreEquivalent(all, registered);
         }
 
         [TestMethod]
@@ -70,22 +75,24 @@ namespace PoeRankingTrackerTests.Installers
 
         private IHandler[] GetServicesHandlers()
         {
-            var handlers = new IHandler[3];
+            var handlers = new IHandler[4];
 
-            handlers[0] = GetHandlersFor(typeof(IApiService), container)[0];
-            handlers[1] = GetHandlersFor(typeof(ICharacterService), container)[0];
+            handlers[0] = GetHandlersFor(typeof(ICharacterService), container)[0];
+            handlers[1] = GetHandlersFor(typeof(IHttpClientService), container)[0];
             handlers[2] = GetHandlersFor(typeof(ILadderService), container)[0];
+            handlers[3] = GetHandlersFor(typeof(ISemaphoreService), container)[0];
 
             return handlers;
         }
 
         private Type[] GetImplementationServicesTypes()
         {
-            var registered = new Type[3];
+            var registered = new Type[4];
 
-            registered[0] = GetImplementationTypesFor(typeof(IApiService), container)[0];
-            registered[1] = GetImplementationTypesFor(typeof(ICharacterService), container)[0];
+            registered[0] = GetImplementationTypesFor(typeof(ICharacterService), container)[0];
+            registered[1] = GetImplementationTypesFor(typeof(IHttpClientService), container)[0];
             registered[2] = GetImplementationTypesFor(typeof(ILadderService), container)[0];
+            registered[3] = GetImplementationTypesFor(typeof(ISemaphoreService), container)[0];
 
             return registered;
         }

@@ -1,6 +1,4 @@
-﻿using PoeRankingTracker.Events;
-using PoeRankingTracker.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -10,96 +8,56 @@ using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
+using PoeRankingTracker.Events;
+using PoeRankingTracker.Models;
 
 namespace PoeRankingTracker.Services
 {
-    public class ApiService : IApiService, IDisposable
+    public interface IHttpClientService
+    {
+        Task SetSessionId(string sessionId);
+        bool SessionIdCorrect();
+        void CancelPendingRequests();
+        Task<List<League>> GetLeaguesAsync();
+        Task<League> GetLeagueAsync(string leagueId);
+        Task<Ladder> GetLadderAsync(string leagueId, string accountName);
+        Task<Ladder> GetLadderAsync(string leagueId, int offset, int limit);
+        Task<List<Entry>> GetEntries(string leagueId, string accountName, string characterName);
+        int GetTimeout();
+
+        event EventHandler<ApiEventArgs> GetEntriesStarted;
+        event EventHandler<ApiEventArgs> GetEntriesIncremented;
+        event EventHandler<ApiEventArgs> GetEntriesEnded;
+        event EventHandler<HttpRequestEventArgs> ProcessGetRequestStarted;
+        event EventHandler<HttpRequestEventArgs> ProcessGetRequestEnded;
+        event EventHandler<RulesEventArgs> UpdateRulesStarted;
+        event EventHandler<RulesEventArgs> UpdateRulesEnded;
+    }
+
+    public class HttpClientService : IHttpClientService, IDisposable
     {
         private readonly CookieContainer cookieContainer = new CookieContainer();
         private HttpClient client;
         private readonly Uri baseUri = new Uri(Properties.Settings.Default.BaseUri);
         private List<RuleApi> rules;
         private List<RuleApi> rulesState;
-        private System.Timers.Timer timer;
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        private SemaphoreSlim semaphore;
-        private int semaphoreNumber;
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private bool sessionIdCorrect = false;
         private readonly ILadderService ladderService;
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-        public ApiService(ILadderService ladderService)
+        public HttpClientService(ILadderService ladderService)
         {
             this.ladderService = ladderService;
             CreateClient();
         }
 
-        private void CreateClient()
+        private void CreateClient(string mediaType = "application/json")
         {
             var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
             client = new HttpClient(handler) { BaseAddress = baseUri };
             client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        }
-
-        private void InitializeTimer()
-        {
-            if (timer == null)
-            {
-                OnTimer(null, null);
-                timer = new System.Timers.Timer();
-                timer.Elapsed += OnTimer;
-                timer.AutoReset = true;
-                timer.Interval = rulesState[0].Interval * 1000;
-                timer.Enabled = true;
-            }
-        }
-
-        private void OnTimer(Object source, ElapsedEventArgs e)
-        {
-            int timeout = GetTimeout();
-            if (timeout == 0)
-            {
-                ReleaseSemaphore();
-            }
-            else
-            {
-                timer.Stop();
-                Thread.Sleep(timeout * 1000);
-                ResetRequestLimit();
-                ReleaseSemaphore();
-                timer.Start();
-            }
-        }
-
-        private int GetTimeout()
-        {
-            int timeout = 0;
-
-            if (rulesState != null)
-            {
-                foreach (var rule in rulesState)
-                {
-                    if (rule.Timeout > timeout)
-                    {
-                        timeout = rule.Timeout;
-                    }
-                }
-            }
-
-            return timeout;
-        }
-
-        private void ResetRequestLimit()
-        {
-            if (rulesState != null)
-            {
-                foreach (var rule in rulesState)
-                {
-                    rule.RequestLimit = 0;
-                }
-            }
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
         }
 
         public async Task SetSessionId(string sessionId)
@@ -117,68 +75,13 @@ namespace PoeRankingTracker.Services
                 }
             }
             // Dummy call to validate session Id
+            // TODO find a better way
             await GetLeaguesAsync().ConfigureAwait(true);
         }
 
-        public async Task<List<League>> GetLeaguesAsync()
+        public void CancelPendingRequests()
         {
-            List<League> leagues = null;
-
-            var uri = new Uri(baseUri, Properties.Settings.Default.LeaguesPath);
-            HttpResponseMessage response = await ProcessGetRequest(uri, false).ConfigureAwait(false);
-            if (response != null)
-            {
-                leagues = await response.Content.ReadAsAsync<List<League>>().ConfigureAwait(false);
-            }
-
-            return leagues;
-        }
-
-        public async Task<League> GetLeagueAsync(string leagueId)
-        {
-            League league = null;
-
-            if (leagueId.Length > 0)
-            {
-                var uri = new Uri(baseUri, $"{Properties.Settings.Default.LeaguesPath}/{leagueId}");
-                HttpResponseMessage response = await ProcessGetRequest(uri, false).ConfigureAwait(false);
-                if (response != null)
-                {
-                    league = await response.Content.ReadAsAsync<League>().ConfigureAwait(false);
-                }
-            }
-
-            return league;
-        }
-
-        public async Task<Ladder> GetLadderAsync(string leagueId, string accountName)
-        {
-            Ladder ladder = null;
-            var uri = new Uri(baseUri, string.Format(CultureInfo.CurrentCulture, Properties.Settings.Default.LaddersPath, leagueId, accountName));
-            HttpResponseMessage response = await ProcessGetRequest(uri, false).ConfigureAwait(false);
-            if (response != null)
-            {
-                ladder = await response.Content.ReadAsAsync<Ladder>(new List<MediaTypeFormatter>() { new LadderFormatter() }).ConfigureAwait(false);
-                // When requesting with an invalid account name, dummy entries are returned with multiple account names
-                if (ladder.Entries.Count > 0 && ladder.Entries[0].Account != null)
-                {
-                    ladder = null;
-                }
-            }
-
-            return ladder;
-        }
-
-        public async Task<Ladder> GetLadderAsync(string leagueId, int offset, int limit)
-        {
-            Ladder ladder = null;
-            var uri = new Uri(baseUri, string.Format(CultureInfo.CurrentCulture, Properties.Settings.Default.LaddersAllPath, leagueId, offset, limit));
-            HttpResponseMessage response = await ProcessGetRequest(uri).ConfigureAwait(false);
-            if (response != null)
-            {
-                ladder = await response.Content.ReadAsAsync<Ladder>().ConfigureAwait(false);
-            }
-            return ladder;
+            client.CancelPendingRequests();
         }
 
         public async Task<List<Entry>> GetEntries(string leagueId, string accountName, string characterName)
@@ -194,10 +97,6 @@ namespace PoeRankingTracker.Services
                 int tasksNumber = (int)Math.Ceiling((double)rank / limit);
                 OnGetEntriesStarted(tasksNumber);
 
-                if (semaphore == null)
-                {
-                    CreateSemaphore();
-                }
                 tokenSource = new CancellationTokenSource();
                 var token = tokenSource.Token;
                 Task[] tasks = new Task[tasksNumber];
@@ -231,43 +130,71 @@ namespace PoeRankingTracker.Services
             return entries;
         }
 
-        public void CancelTasks()
+        public async Task<Ladder> GetLadderAsync(string leagueId, string accountName)
         {
-            logger.Debug("Cancel tasks");
-            timer.Stop();
-            tokenSource.Cancel();
-            client.CancelPendingRequests();
-            if (semaphore != null)
+            Ladder ladder = null;
+            var uri = new Uri(baseUri, string.Format(CultureInfo.CurrentCulture, Properties.Settings.Default.LaddersPath, leagueId, accountName));
+            HttpResponseMessage response = await ProcessGetRequest(uri).ConfigureAwait(false);
+            if (response != null)
             {
-                semaphore.Dispose();
-                semaphore = null;
-            }
-        }
-
-        private void ReleaseSemaphore()
-        {
-            if (semaphore != null && !tokenSource.IsCancellationRequested)
-            {
-                int i = semaphoreNumber - semaphore.CurrentCount - rulesState[0].RequestLimit;
-                if (i > 0)
+                ladder = await response.Content.ReadAsAsync<Ladder>(new List<MediaTypeFormatter>() { new LadderFormatter() }).ConfigureAwait(false);
+                // When requesting with an invalid account name, dummy entries are returned with multiple account names
+                if (ladder.Entries.Count > 0 && ladder.Entries[0].Account != null)
                 {
-                    semaphore.Release(i);
-                }
-                else if (semaphore.CurrentCount == 0)
-                {
-                    rulesState[0].RequestLimit = 0;
-                    OnTimer(null, null);
+                    ladder = null;
                 }
             }
+
+            return ladder;
         }
 
-        private async Task<HttpResponseMessage> ProcessGetRequest(Uri uri, bool withSemaphore = true)
+        public async Task<Ladder> GetLadderAsync(string leagueId, int offset, int limit)
         {
+            Ladder ladder = null;
+            var uri = new Uri(baseUri, string.Format(CultureInfo.CurrentCulture, Properties.Settings.Default.LaddersAllPath, leagueId, offset, limit));
+            HttpResponseMessage response = await ProcessGetRequest(uri).ConfigureAwait(false);
+            if (response != null)
+            {
+                ladder = await response.Content.ReadAsAsync<Ladder>().ConfigureAwait(false);
+            }
+            return ladder;
+        }
+
+        public async Task<League> GetLeagueAsync(string leagueId)
+        {
+            League league = null;
+
+            if (leagueId.Length > 0)
+            {
+                var uri = new Uri(baseUri, $"{Properties.Settings.Default.LeaguesPath}/{leagueId}");
+                HttpResponseMessage response = await ProcessGetRequest(uri).ConfigureAwait(false);
+                if (response != null)
+                {
+                    league = await response.Content.ReadAsAsync<League>().ConfigureAwait(false);
+                }
+            }
+
+            return league;
+        }
+
+        public async Task<List<League>> GetLeaguesAsync()
+        {
+            List<League> leagues = null;
+
+            var uri = new Uri(baseUri, Properties.Settings.Default.LeaguesPath);
+            HttpResponseMessage response = await ProcessGetRequest(uri).ConfigureAwait(false);
+            if (response != null)
+            {
+                leagues = await response.Content.ReadAsAsync<List<League>>().ConfigureAwait(false);
+            }
+
+            return leagues;
+        }
+
+        private async Task<HttpResponseMessage> ProcessGetRequest(Uri uri)
+        {
+            OnProcessGetRequestStarted();
             HttpResponseMessage response;
-            if (withSemaphore && semaphore != null)
-            {
-                semaphore.Wait();
-            }
 
             logger.Debug($"Process GET request uri={uri}");
             response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
@@ -281,10 +208,12 @@ namespace PoeRankingTracker.Services
 
             if (response.IsSuccessStatusCode)
             {
+                OnProcessGetRequestEnded(true);
                 return response;
             }
             else if (429 == (int)response.StatusCode)
             {
+                OnProcessGetRequestEnded(false);
                 // Retry after waiting the appropriate time
                 int delay;
                 if (response.Headers.RetryAfter != null)
@@ -302,6 +231,7 @@ namespace PoeRankingTracker.Services
             }
             else
             {
+                OnProcessGetRequestEnded(false);
                 logger.Error($"Request error for uri {uri.AbsoluteUri} failed with code {response.StatusCode}");
                 return null;
             }
@@ -309,8 +239,9 @@ namespace PoeRankingTracker.Services
 
         private void UpdateRules(HttpResponseHeaders headers)
         {
-            timer?.Stop();
+            OnUpdateRulesStarted(rules, rulesState);
             rules = GetRules(headers, "x-rate-limit-account");
+
             if (rules != null)
             {
                 rulesState = GetRules(headers, "x-rate-limit-account-state");
@@ -322,30 +253,18 @@ namespace PoeRankingTracker.Services
                 rulesState = GetRules(headers, "x-rate-limit-ip-state");
                 sessionIdCorrect = false;
             }
+
             if (rules != null)
             {
                 var rulesStr = string.Join(",", rules);
                 var rulesStateStr = string.Join(",", rulesState);
+                OnUpdateRulesEnded(rules, rulesState);
                 logger.Debug("Rules : {0} - Rules state : {1}", rulesStr, rulesStateStr);
             }
             else
             {
                 logger.Debug("No rules returned in response");
             }
-            timer?.Start();
-        }
-
-        private void CreateSemaphore()
-        {
-            if (semaphore != null)
-            {
-                logger.Debug("Destroy semaphore");
-                semaphore.Dispose();
-            }
-            semaphoreNumber = rules[0].RequestLimit;
-            logger.Debug($"Create semaphore with max = {semaphoreNumber}");
-            semaphore = new SemaphoreSlim(0, semaphoreNumber);
-            InitializeTimer();
         }
 
         private List<RuleApi> GetRules(HttpResponseHeaders headers, string value)
@@ -377,6 +296,24 @@ namespace PoeRankingTracker.Services
             return sessionIdCorrect;
         }
 
+        public int GetTimeout()
+        {
+            int timeout = 0;
+
+            if (rulesState != null)
+            {
+                foreach (var rule in rulesState)
+                {
+                    if (rule.Timeout > timeout)
+                    {
+                        timeout = rule.Timeout;
+                    }
+                }
+            }
+
+            return timeout;
+        }
+
         private void OnGetEntriesStarted(int value)
         {
             ApiEventArgs args = new ApiEventArgs
@@ -401,13 +338,47 @@ namespace PoeRankingTracker.Services
             GetEntriesEnded?.Invoke(this, args);
         }
 
+        private void OnProcessGetRequestStarted()
+        {
+            HttpRequestEventArgs args = new HttpRequestEventArgs();
+            ProcessGetRequestStarted?.Invoke(this, args);
+        }
+
+        private void OnProcessGetRequestEnded(bool success)
+        {
+            HttpRequestEventArgs args = new HttpRequestEventArgs {
+                Success = success,
+                Rules = rules,
+                RulesState = rulesState,
+            };
+            ProcessGetRequestEnded?.Invoke(this, args);
+        }
+
+        private void OnUpdateRulesStarted(List<RuleApi> rules, List<RuleApi> rulesStates)
+        {
+            RulesEventArgs args = new RulesEventArgs
+            {
+                Rules = rules,
+                RulesState = rulesStates,
+            };
+            UpdateRulesStarted?.Invoke(this, args);
+        }
+
+        private void OnUpdateRulesEnded(List<RuleApi> rules, List<RuleApi> rulesStates)
+        {
+            RulesEventArgs args = new RulesEventArgs
+            {
+                Rules = rules,
+                RulesState = rulesStates,
+            };
+            UpdateRulesEnded?.Invoke(this, args);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
                 client.Dispose();
-                timer?.Dispose();
-                semaphore?.Dispose();
                 tokenSource.Dispose();
             }
         }
@@ -421,5 +392,9 @@ namespace PoeRankingTracker.Services
         public event EventHandler<ApiEventArgs> GetEntriesStarted;
         public event EventHandler<ApiEventArgs> GetEntriesIncremented;
         public event EventHandler<ApiEventArgs> GetEntriesEnded;
+        public event EventHandler<HttpRequestEventArgs> ProcessGetRequestStarted;
+        public event EventHandler<HttpRequestEventArgs> ProcessGetRequestEnded;
+        public event EventHandler<RulesEventArgs> UpdateRulesStarted;
+        public event EventHandler<RulesEventArgs> UpdateRulesEnded;
     }
 }

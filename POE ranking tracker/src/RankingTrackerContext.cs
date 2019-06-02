@@ -1,5 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
+﻿using Castle.Windsor;
 using Castle.Windsor.Installer;
 using PoeRankingTracker.Forms;
 using PoeRankingTracker.Installers;
@@ -28,8 +27,8 @@ namespace PoeRankingTracker
 
             Application.ApplicationExit += new EventHandler(OnApplicationExit);
 
-            configurationForm = new ConfigurationForm(container.Resolve<IApiService>());
-            trackerForm = new TrackerForm(container.Resolve<IApiService>(), container.Resolve<ICharacterService>());
+            configurationForm = new ConfigurationForm(container.Resolve<IHttpClientService>());
+            trackerForm = new TrackerForm(container.Resolve<IHttpClientService>(), container.Resolve<ICharacterService>());
 
             ShowConfigurationForm();
         }

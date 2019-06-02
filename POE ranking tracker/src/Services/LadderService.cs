@@ -3,6 +3,11 @@ using System;
 
 namespace PoeRankingTracker.Services
 {
+    public interface ILadderService
+    {
+        int GetRank(Ladder ladder, string characterName);
+    }
+
     public class LadderService : ILadderService
     {
         public const int defaultRank = 15000;
