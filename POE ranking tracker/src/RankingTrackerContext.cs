@@ -27,7 +27,7 @@ namespace PoeRankingTracker
 
             Application.ApplicationExit += new EventHandler(OnApplicationExit);
 
-            configurationForm = new ConfigurationForm(container.Resolve<IHttpClientService>());
+            configurationForm = new ConfigurationForm(container.Resolve<IHttpClientService>(), container.Resolve<ISemaphoreService>());
             trackerForm = new TrackerForm(container.Resolve<IHttpClientService>(), container.Resolve<ICharacterService>());
 
             ShowConfigurationForm();

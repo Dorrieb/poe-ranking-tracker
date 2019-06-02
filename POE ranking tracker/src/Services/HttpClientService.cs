@@ -23,6 +23,9 @@ namespace PoeRankingTracker.Services
         Task<Ladder> GetLadderAsync(string leagueId, string accountName);
         Task<Ladder> GetLadderAsync(string leagueId, int offset, int limit);
         Task<List<Entry>> GetEntries(string leagueId, string accountName, string characterName);
+        int GetMaxRequestLimit();
+        int GetCurrentRequestLimit();
+        int GetInterval();
         int GetTimeout();
 
         event EventHandler<ApiEventArgs> GetEntriesStarted;
@@ -32,6 +35,7 @@ namespace PoeRankingTracker.Services
         event EventHandler<HttpRequestEventArgs> ProcessGetRequestEnded;
         event EventHandler<RulesEventArgs> UpdateRulesStarted;
         event EventHandler<RulesEventArgs> UpdateRulesEnded;
+        event EventHandler<EventArgs> CancelRequested;
     }
 
     public class HttpClientService : IHttpClientService, IDisposable
@@ -67,6 +71,9 @@ namespace PoeRankingTracker.Services
                 try
                 {
                     cookieContainer.SetCookies(baseUri, $"POESESSID={sessionId}");
+
+                    // Dummy call to validate session Id
+                    await GetLeaguesAsync().ConfigureAwait(true);
                 }
                 catch (CookieException e)
                 {
@@ -74,13 +81,11 @@ namespace PoeRankingTracker.Services
                     sessionIdCorrect = false;
                 }
             }
-            // Dummy call to validate session Id
-            // TODO find a better way
-            await GetLeaguesAsync().ConfigureAwait(true);
         }
 
         public void CancelPendingRequests()
         {
+            OnCancelRequested();
             client.CancelPendingRequests();
         }
 
@@ -193,10 +198,12 @@ namespace PoeRankingTracker.Services
 
         private async Task<HttpResponseMessage> ProcessGetRequest(Uri uri)
         {
+            logger.Debug($"Process GET request uri={uri} - start");
             OnProcessGetRequestStarted();
             HttpResponseMessage response;
 
-            logger.Debug($"Process GET request uri={uri}");
+            logger.Debug($"Process GET request uri={uri} - begin");
+
             response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
 
             int timeout = GetTimeout();
@@ -296,6 +303,60 @@ namespace PoeRankingTracker.Services
             return sessionIdCorrect;
         }
 
+        public int GetCurrentRequestLimit()
+        {
+            int requestLimit = int.MaxValue;
+
+            if (rulesState != null)
+            {
+                foreach (var rule in rulesState)
+                {
+                    if (rule.RequestLimit < requestLimit)
+                    {
+                        requestLimit = rule.RequestLimit;
+                    }
+                }
+            }
+
+            return requestLimit;
+        }
+
+        public int GetMaxRequestLimit()
+        {
+            int requestLimit = int.MaxValue;
+
+            if (rules != null)
+            {
+                foreach (var rule in rules)
+                {
+                    if (rule.RequestLimit < requestLimit)
+                    {
+                        requestLimit = rule.RequestLimit;
+                    }
+                }
+            }
+
+            return requestLimit;
+        }
+
+        public int GetInterval()
+        {
+            int interval = 0;
+
+            if (rules != null)
+            {
+                foreach (var rule in rules)
+                {
+                    if (rule.Interval > interval)
+                    {
+                        interval = rule.Interval;
+                    }
+                }
+            }
+
+            return interval;
+        }
+
         public int GetTimeout()
         {
             int timeout = 0;
@@ -374,6 +435,12 @@ namespace PoeRankingTracker.Services
             UpdateRulesEnded?.Invoke(this, args);
         }
 
+        private void OnCancelRequested()
+        {
+            EventArgs args = new EventArgs();
+            CancelRequested?.Invoke(this, args);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -396,5 +463,6 @@ namespace PoeRankingTracker.Services
         public event EventHandler<HttpRequestEventArgs> ProcessGetRequestEnded;
         public event EventHandler<RulesEventArgs> UpdateRulesStarted;
         public event EventHandler<RulesEventArgs> UpdateRulesEnded;
+        public event EventHandler<EventArgs> CancelRequested;
     }
 }

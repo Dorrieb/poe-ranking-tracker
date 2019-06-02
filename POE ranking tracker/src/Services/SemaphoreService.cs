@@ -9,8 +9,7 @@ namespace PoeRankingTracker.Services
 {
     public interface ISemaphoreService
     {
-        void CreateSemaphore(int requestLimit, int interval);
-        void CancelTasks();
+        void CreateSemaphore();
     }
 
     public class SemaphoreService : ISemaphoreService, IDisposable
@@ -19,7 +18,6 @@ namespace PoeRankingTracker.Services
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private SemaphoreSlim semaphore;
         private int semaphoreNumber;
-        private List<RuleApi> rulesState;
         private readonly IHttpClientService httpClientService;
 
         public SemaphoreService(IHttpClientService httpClientService)
@@ -29,22 +27,28 @@ namespace PoeRankingTracker.Services
             httpClientService.ProcessGetRequestEnded += OnProcessGetRequestEnded;
             httpClientService.UpdateRulesStarted += OnUpdateRulesStarted;
             httpClientService.UpdateRulesEnded += OnUpdateRulesEnded;
+            httpClientService.CancelRequested += OnCancelRequested;
         }
 
-        public void CreateSemaphore(int requestLimit, int interval)
+        public void CreateSemaphore()
         {
+            int currentRequestLimit = httpClientService.GetCurrentRequestLimit();
+            int maxRequestLimit = httpClientService.GetMaxRequestLimit();
+            int interval = httpClientService.GetInterval();
+
             if (semaphore != null)
             {
                 logger.Debug("Destroy semaphore");
                 semaphore.Dispose();
             }
-            semaphoreNumber = requestLimit;
-            logger.Debug($"Create semaphore with max = {semaphoreNumber}");
-            semaphore = new SemaphoreSlim(0, semaphoreNumber);
+            semaphoreNumber = maxRequestLimit;
+            int initialCount = maxRequestLimit - currentRequestLimit;
+            logger.Debug($"Create semaphore with initial = {initialCount} and max = {semaphoreNumber}");
+            semaphore = new SemaphoreSlim(initialCount, semaphoreNumber);
             InitializeTimer(interval);
         }
 
-        public void CancelTasks()
+        private void CancelTasks()
         {
             logger.Debug("Cancel tasks");
             timer.Stop();
@@ -88,38 +92,39 @@ namespace PoeRankingTracker.Services
         {
             if (semaphore != null)
             {
-                int i = semaphoreNumber - semaphore.CurrentCount - rulesState[0].RequestLimit;
+                int i = semaphoreNumber - semaphore.CurrentCount - httpClientService.GetCurrentRequestLimit();
+                logger.Debug($"Release {i} semaphores");
                 if (i > 0)
                 {
                     semaphore.Release(i);
-                }
-                else if (semaphore.CurrentCount == 0)
-                {
-                    rulesState[0].RequestLimit = 0;
-                    OnTimer(null, null);
                 }
             }
         }
 
         private void OnProcessGetRequestStarted(object sender, HttpRequestEventArgs args)
         {
-            semaphore.Wait();
+            logger.Debug($"Wait for semaphore - start ({semaphore?.CurrentCount})");
+            semaphore?.Wait();
+            logger.Debug($"Wait for semaphore - end ({semaphore?.CurrentCount})");
         }
 
         private void OnProcessGetRequestEnded(object sender, HttpRequestEventArgs args)
         {
-            ReleaseSemaphore();
         }
 
         private void OnUpdateRulesStarted(object sender, RulesEventArgs args)
         {
-            timer.Stop();
+            timer?.Stop();
         }
 
         private void OnUpdateRulesEnded(object sender, RulesEventArgs args)
         {
-            rulesState = args.RulesState;
-            timer.Start();
+            timer?.Start();
+        }
+
+        private void OnCancelRequested(object sender, EventArgs args)
+        {
+            CancelTasks();
         }
 
         protected virtual void Dispose(bool disposing)

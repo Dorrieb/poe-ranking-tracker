@@ -19,10 +19,12 @@ namespace PoeRankingTracker.Forms
         private Entry selectedEntry = null;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private IHttpClientService httpClientService;
+        private ISemaphoreService semaphoreService;
 
-        public ConfigurationForm(IHttpClientService httpClientService)
+        public ConfigurationForm(IHttpClientService httpClientService, ISemaphoreService semaphoreService)
         {
             this.httpClientService = httpClientService;
+            this.semaphoreService = semaphoreService;
             InitializeComponent();
             InitializeTranslations();
             InitializePosition();
@@ -30,7 +32,7 @@ namespace PoeRankingTracker.Forms
             InitializeLanguagesCombo();
             InitializeLeagueRaceCombo();
         }
-
+        
         private void InitializeTranslations()
         {
             if (Properties.Settings.Default.Language.Length > 0)
@@ -130,6 +132,8 @@ namespace PoeRankingTracker.Forms
             {
                 List<League> leagues = await httpClientService.GetLeaguesAsync().ConfigureAwait(true);
                 CheckSessionId();
+
+                semaphoreService.CreateSemaphore();
 
                 errorProvider.SetError(leagueRaceCombo, "");
                 leagueRaceCombo.Items.Clear();
@@ -425,6 +429,7 @@ namespace PoeRankingTracker.Forms
                 Properties.Settings.Default.SessionId = tb.Text;
                 await httpClientService.SetSessionId(tb.Text).ConfigureAwait(true);
                 CheckSessionId();
+                semaphoreService.CreateSemaphore();
             }
         }
 
