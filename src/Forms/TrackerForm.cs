@@ -1,4 +1,6 @@
-﻿using PoeRankingTracker.Events;
+﻿using PoeApiClient.Events;
+using PoeApiClient.Models;
+using PoeApiClient.Services;
 using PoeRankingTracker.Models;
 using PoeRankingTracker.Resources.Translations;
 using PoeRankingTracker.Services;
@@ -125,7 +127,9 @@ namespace PoeRankingTracker.Forms
             logger.Debug("RetrieveData");
             timer?.Stop();
 
-            List<Entry> entries = await httpClientService.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name).ConfigureAwait(true);
+            ILadder ladder = await httpClientService.GetLadderAsync(configuration.League.Id, configuration.AccountName).ConfigureAwait(true);
+            int rank = characterService.GetRank(ladder, configuration.Entry.Character.Name);
+            List<IEntry> entries = await httpClientService.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name, rank).ConfigureAwait(true);
             ComputeRank(entries);
             ComputeRankByClass(entries);
             ComputeNumberOfDeadsAhead(entries);
@@ -135,7 +139,7 @@ namespace PoeRankingTracker.Forms
             timer?.Start();
         }
 
-        private void ComputeRank(List<Entry> entries)
+        private void ComputeRank(List<IEntry> entries)
         {
             DisplayRank(characterService.GetRank(entries, Properties.Settings.Default.CharacterName));
         }
@@ -148,7 +152,7 @@ namespace PoeRankingTracker.Forms
             }));
         }
 
-        private void ComputeRankByClass(List<Entry> entries)
+        private void ComputeRankByClass(List<IEntry> entries)
         {
             if (Properties.Settings.Default.ShowRankByClass)
             {
@@ -168,7 +172,7 @@ namespace PoeRankingTracker.Forms
             }
         }
 
-        private void ComputeNumberOfDeadsAhead(List<Entry> entries)
+        private void ComputeNumberOfDeadsAhead(List<IEntry> entries)
         {
             if (Properties.Settings.Default.ShowDeadsAhead)
             {
@@ -188,7 +192,7 @@ namespace PoeRankingTracker.Forms
             }
         }
 
-        private void ComputeExperienceAhead(List<Entry> entries)
+        private void ComputeExperienceAhead(List<IEntry> entries)
         {
             if (Properties.Settings.Default.ShowExperienceAhead)
             {
@@ -208,7 +212,7 @@ namespace PoeRankingTracker.Forms
             }
         }
 
-        private void ComputeExperienceBehind(List<Entry> entries)
+        private void ComputeExperienceBehind(List<IEntry> entries)
         {
             if (Properties.Settings.Default.ShowExperienceBehind)
             {

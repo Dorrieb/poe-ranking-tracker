@@ -1,4 +1,6 @@
-﻿using PoeRankingTracker.Models;
+﻿using PoeApiClient.Models;
+using PoeApiClient.Services;
+using PoeRankingTracker.Models;
 using PoeRankingTracker.Resources.Translations;
 using PoeRankingTracker.Services;
 using System;
@@ -14,9 +16,9 @@ namespace PoeRankingTracker.Forms
 {
     public partial class ConfigurationForm : Form
     {
-        private League selectedLeague = null;
+        private ILeague selectedLeague = null;
         private string accountName = Properties.Settings.Default.AccountName;
-        private Entry selectedEntry = null;
+        private IEntry selectedEntry = null;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private IHttpClientService httpClientService;
         private ISemaphoreService semaphoreService;
@@ -299,7 +301,7 @@ namespace PoeRankingTracker.Forms
             charactersComboBox.Items.Clear();
             if (selectedLeague != null && accountName != null && accountName.Length > 0)
             {
-                Ladder ladder = await httpClientService.GetLadderAsync(selectedLeague.Id, accountName).ConfigureAwait(true);
+                ILadder ladder = await httpClientService.GetLadderAsync(selectedLeague.Id, accountName).ConfigureAwait(true);
                 try
                 {
                     selectedEntry = null;

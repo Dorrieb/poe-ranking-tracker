@@ -133,29 +133,10 @@ namespace PoeRankingTracker.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://api.pathofexile.com")]
-        public string BaseUri {
-            get {
-                return ((string)(this["BaseUri"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("leagues")]
         public string LeaguesPath {
             get {
                 return ((string)(this["LeaguesPath"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ladders/{0}?accountName={1}")]
-        public string LaddersPath {
-            get {
-                return ((string)(this["LaddersPath"]));
             }
         }
         
@@ -192,15 +173,6 @@ namespace PoeRankingTracker.Properties {
             }
             set {
                 this["ShowExperienceBehind"] = value;
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ladders/{0}?offset={1}&limit={2}")]
-        public string LaddersAllPath {
-            get {
-                return ((string)(this["LaddersAllPath"]));
             }
         }
         

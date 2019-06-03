@@ -1,4 +1,5 @@
-﻿using PoeRankingTracker.Models;
+﻿using PoeApiClient.Models;
+using PoeRankingTracker.Models;
 using System;
 using System.Collections.Generic;
 
@@ -6,18 +7,40 @@ namespace PoeRankingTracker.Services
 {
     public interface ICharacterService
     {
-        int GetRankByClass(List<Entry> entries, Entry entry);
-        int GetNumbersOfDeadsAhead(List<Entry> entries, Entry entry);
-        bool IsEntryInvalid(Entry entry);
-        long GetExperienceDifference(Entry entry1, Entry entry2);
-        int GetRank(List<Entry> entries, string characterName);
-        long GetExperienceAhead(List<Entry> entries, Entry entry);
-        long GetExperienceBehind(List<Entry> entries, Entry entry);
+        int GetRank(ILadder ladder, string characterName);
+        int GetRankByClass(List<IEntry> entries, IEntry entry);
+        int GetNumbersOfDeadsAhead(List<IEntry> entries, IEntry entry);
+        bool IsEntryInvalid(IEntry entry);
+        long GetExperienceDifference(IEntry entry1, IEntry entry2);
+        int GetRank(List<IEntry> entries, string characterName);
+        long GetExperienceAhead(List<IEntry> entries, IEntry entry);
+        long GetExperienceBehind(List<IEntry> entries, IEntry entry);
     }
 
     public class CharacterService : ICharacterService
     {
-        public int GetRankByClass(List<Entry> entries, Entry entry)
+        public const int defaultRank = 15000;
+
+        public int GetRank(ILadder ladder, string characterName)
+        {
+            var rank = defaultRank;
+
+            if (ladder != null)
+            {
+                foreach (var entry in ladder.Entries)
+                {
+                    if (characterName == entry.Character.Name)
+                    {
+                        rank = entry.Rank;
+                        break;
+                    }
+                }
+            }
+
+            return rank;
+        }
+
+        public int GetRankByClass(List<IEntry> entries, IEntry entry)
         {
             var rank = 1;
             int start = entries.IndexOf(entry);
@@ -32,7 +55,7 @@ namespace PoeRankingTracker.Services
             return rank;
         }
 
-        public int GetNumbersOfDeadsAhead(List<Entry> entries, Entry entry)
+        public int GetNumbersOfDeadsAhead(List<IEntry> entries, IEntry entry)
         {
             var n = 0;
             int start = entries.IndexOf(entry);
@@ -47,19 +70,19 @@ namespace PoeRankingTracker.Services
             return n;
         }
 
-        public bool IsEntryInvalid(Entry entry)
+        public bool IsEntryInvalid(IEntry entry)
         {
             return entry.Dead || entry.Retired;
         }
 
-        public long GetExperienceDifference(Entry entry1, Entry entry2)
+        public long GetExperienceDifference(IEntry entry1, IEntry entry2)
         {
             return entry1.Character.Experience - entry2.Character.Experience;
         }
 
-        public int GetRank(List<Entry> entries, string characterName)
+        public int GetRank(List<IEntry> entries, string characterName)
         {
-            var rank = LadderService.defaultRank;
+            var rank = defaultRank;
 
             var match = entries.Find(e => e.Character.Name == characterName);
             if (match != null)
@@ -70,7 +93,7 @@ namespace PoeRankingTracker.Services
             return rank;
         }
 
-        public long GetExperienceAhead(List<Entry> entries, Entry entry)
+        public long GetExperienceAhead(List<IEntry> entries, IEntry entry)
         {
             long n = 0;
             int i = entries.IndexOf(entry);
@@ -82,7 +105,7 @@ namespace PoeRankingTracker.Services
             return n;
         }
 
-        public long GetExperienceBehind(List<Entry> entries, Entry entry)
+        public long GetExperienceBehind(List<IEntry> entries, IEntry entry)
         {
             long n = 0;
             int i = entries.IndexOf(entry);

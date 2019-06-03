@@ -1,12 +1,13 @@
-﻿using System.Drawing;
+﻿using PoeApiClient.Models;
+using System.Drawing;
 using System.Globalization;
 
 namespace PoeRankingTracker.Models
 {
     public class TrackerConfiguration
     {
-        public League League { get; set; }
-        public Entry Entry { get; set; }
+        public ILeague League { get; set; }
+        public IEntry Entry { get; set; }
         public Font Font { get; set; }
         public Color FontColor { get; set; }
         public Color BackgroundColor { get; set; }
