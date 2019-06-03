@@ -125,9 +125,17 @@
     <value>Background color</value>
     <comment>Background color label</comment>
   </data>
+  <data name="CannotFindLeague" xml:space="preserve">
+    <value>Cannot find league</value>
+    <comment>Cannot find league error</comment>
+  </data>
   <data name="CharacterName" xml:space="preserve">
     <value>Character name</value>
     <comment>Character name label</comment>
+  </data>
+  <data name="CharactersFoundForAccount" xml:space="preserve">
+    <value>Characters found with account name {0}</value>
+    <comment>Characters found error</comment>
   </data>
   <data name="ChooseFont" xml:space="preserve">
     <value>Choose font</value>
@@ -144,6 +152,10 @@
   <data name="DeadsAhead" xml:space="preserve">
     <value>Deads ahead</value>
     <comment>Deads ahead label (preview and tracker)</comment>
+  </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>End date : {0}</value>
+    <comment>End date label</comment>
   </data>
   <data name="ExperienceAhead" xml:space="preserve">
     <value>XP to gain rank</value>
@@ -240,6 +252,10 @@
   <data name="ShowRankByClass" xml:space="preserve">
     <value>Show rank by class</value>
     <comment>Show rank by class checkbox label</comment>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>Start date : {0}</value>
+    <comment>Start date label</comment>
   </data>
   <data name="UnableToOpenUrl" xml:space="preserve">
     <value>Unable to open URL</value>

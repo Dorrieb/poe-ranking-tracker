@@ -37,6 +37,7 @@ namespace PoeRankingTrackerTests.Installers
         {
             var all = GetPublicClassesFromApplicationAssembly(
                 c => c.Is<ICharacterService>() ||
+                     c.Is<IFormService>() ||
                      c.Is<IHttpClientService>() ||
                      c.Is<ILadderService>() ||
                      c.Is<ISemaphoreService>()
@@ -75,24 +76,26 @@ namespace PoeRankingTrackerTests.Installers
 
         private IHandler[] GetServicesHandlers()
         {
-            var handlers = new IHandler[4];
+            var handlers = new IHandler[5];
 
             handlers[0] = GetHandlersFor(typeof(ICharacterService), container)[0];
-            handlers[1] = GetHandlersFor(typeof(IHttpClientService), container)[0];
-            handlers[2] = GetHandlersFor(typeof(ILadderService), container)[0];
-            handlers[3] = GetHandlersFor(typeof(ISemaphoreService), container)[0];
+            handlers[1] = GetHandlersFor(typeof(IFormService), container)[0];
+            handlers[2] = GetHandlersFor(typeof(IHttpClientService), container)[0];
+            handlers[3] = GetHandlersFor(typeof(ILadderService), container)[0];
+            handlers[4] = GetHandlersFor(typeof(ISemaphoreService), container)[0];
 
             return handlers;
         }
 
         private Type[] GetImplementationServicesTypes()
         {
-            var registered = new Type[4];
+            var registered = new Type[5];
 
             registered[0] = GetImplementationTypesFor(typeof(ICharacterService), container)[0];
-            registered[1] = GetImplementationTypesFor(typeof(IHttpClientService), container)[0];
-            registered[2] = GetImplementationTypesFor(typeof(ILadderService), container)[0];
-            registered[3] = GetImplementationTypesFor(typeof(ISemaphoreService), container)[0];
+            registered[1] = GetImplementationTypesFor(typeof(IFormService), container)[0];
+            registered[2] = GetImplementationTypesFor(typeof(IHttpClientService), container)[0];
+            registered[3] = GetImplementationTypesFor(typeof(ILadderService), container)[0];
+            registered[4] = GetImplementationTypesFor(typeof(ISemaphoreService), container)[0];
 
             return registered;
         }

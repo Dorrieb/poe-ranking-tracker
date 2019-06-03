@@ -75,6 +75,8 @@
             this.sampleLabel = new System.Windows.Forms.Label();
             this.advancedOptionsPanel = new System.Windows.Forms.Panel();
             this.fontDialog = new System.Windows.Forms.FontDialog();
+            this.infoProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.okProvider = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.mainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.infoKeyProvider)).BeginInit();
@@ -84,6 +86,8 @@
             this.optionsPanel.SuspendLayout();
             this.samplePanel.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.infoProvider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.okProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // okButton
@@ -565,6 +569,16 @@
             this.fontDialog.MinSize = 8;
             this.fontDialog.ShowColor = true;
             // 
+            // infoProvider
+            // 
+            this.infoProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.infoProvider.ContainerControl = this;
+            // 
+            // okProvider
+            // 
+            this.okProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.okProvider.ContainerControl = this;
+            // 
             // ConfigurationForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -599,6 +613,8 @@
             this.samplePanel.PerformLayout();
             this.tableLayoutPanel.ResumeLayout(false);
             this.tableLayoutPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.infoProvider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.okProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -651,6 +667,8 @@
         private System.Windows.Forms.CheckBox showExperienceBehindCheckBox;
         private System.Windows.Forms.CheckBox showProgressBarCheckBox;
         private Components.TrackerProgressBar progressBar;
+        private System.Windows.Forms.ErrorProvider infoProvider;
+        private System.Windows.Forms.ErrorProvider okProvider;
     }
 }
 

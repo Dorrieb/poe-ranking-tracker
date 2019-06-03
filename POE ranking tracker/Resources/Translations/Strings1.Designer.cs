@@ -79,11 +79,29 @@ namespace PoeRankingTracker.Resources.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot find league.
+        /// </summary>
+        public static string CannotFindLeague {
+            get {
+                return ResourceManager.GetString("CannotFindLeague", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Character name.
         /// </summary>
         public static string CharacterName {
             get {
                 return ResourceManager.GetString("CharacterName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Characters found with account name {0}.
+        /// </summary>
+        public static string CharactersFoundForAccount {
+            get {
+                return ResourceManager.GetString("CharactersFoundForAccount", resourceCulture);
             }
         }
         
@@ -120,6 +138,15 @@ namespace PoeRankingTracker.Resources.Translations {
         public static string DeadsAhead {
             get {
                 return ResourceManager.GetString("DeadsAhead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End date : {0}.
+        /// </summary>
+        public static string EndDate {
+            get {
+                return ResourceManager.GetString("EndDate", resourceCulture);
             }
         }
         
@@ -336,6 +363,15 @@ namespace PoeRankingTracker.Resources.Translations {
         public static string ShowRankByClass {
             get {
                 return ResourceManager.GetString("ShowRankByClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start date : {0}.
+        /// </summary>
+        public static string StartDate {
+            get {
+                return ResourceManager.GetString("StartDate", resourceCulture);
             }
         }
         

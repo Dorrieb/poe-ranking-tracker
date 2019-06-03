@@ -20,9 +20,11 @@ namespace PoeRankingTracker.Forms
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private IHttpClientService httpClientService;
         private ISemaphoreService semaphoreService;
+        private IFormService formService;
 
-        public ConfigurationForm(IHttpClientService httpClientService, ISemaphoreService semaphoreService)
+        public ConfigurationForm(IFormService formService, IHttpClientService httpClientService, ISemaphoreService semaphoreService)
         {
+            this.formService = formService;
             this.httpClientService = httpClientService;
             this.semaphoreService = semaphoreService;
             InitializeComponent();
@@ -37,7 +39,7 @@ namespace PoeRankingTracker.Forms
         {
             if (Properties.Settings.Default.Language.Length > 0)
             {
-                SetCulture(Properties.Settings.Default.Language);
+                formService.SetCulture(Properties.Settings.Default.Language);
             }
 
             Text = Strings.Configuration;
@@ -121,6 +123,8 @@ namespace PoeRankingTracker.Forms
             infoKeyProvider.Icon = Icon.FromHandle(Properties.Resources.Key_16x.GetHicon());
             warningKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyWarning_16x.GetHicon());
             errorKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyError_16x.GetHicon());
+            infoProvider.Icon = formService.ResizeIcon(SystemIcons.Information, SystemInformation.SmallIconSize);
+            okProvider.Icon = Icon.FromHandle(Properties.Resources.StatusOK_16x.GetHicon());
             await httpClientService.SetSessionId(Properties.Settings.Default.SessionId).ConfigureAwait(true);
             CheckSessionId();
             CenterPanel();
@@ -191,6 +195,7 @@ namespace PoeRankingTracker.Forms
                 }
             }
 
+            DisplayLeagueInfo();
             InitializeCharactersList();
         }
 
@@ -214,6 +219,7 @@ namespace PoeRankingTracker.Forms
             leagueUrlLink.Enabled = true;
 
             InitializeCharactersList();
+            DisplayLeagueInfo();
         }
 
         private async void LeagueRaceCombo_TextUpdate(object sender, EventArgs e)
@@ -300,11 +306,10 @@ namespace PoeRankingTracker.Forms
                     CheckIfOkButtonCanBeEnabled();
                     if (ladder == null || (ladder.Entries != null && ladder.Entries.Count == 0))
                     {
-                        errorProvider.SetError(accountNameTextBox, string.Format(CultureInfo.CurrentCulture, Strings.NoCharactersFoundForAccount, accountName));
+                        SetAccountNameError();
                     }
                     else
                     {
-                        errorProvider.SetError(accountNameTextBox, "");
                         foreach (Entry entry in ladder.Entries)
                         {
                             var item = new ComboBoxItem
@@ -318,10 +323,7 @@ namespace PoeRankingTracker.Forms
                                 charactersComboBox.SelectedItem = item;
                             }
                         }
-                        if (charactersComboBox.Items.Count == 0)
-                        {
-                            errorProvider.SetError(accountNameTextBox, string.Format(CultureInfo.CurrentCulture, Strings.NoCharactersFoundForAccount, accountName));
-                        }
+                        SetAccountNameError();
                     }
                 }
                 catch (HttpRequestException e)
@@ -329,6 +331,20 @@ namespace PoeRankingTracker.Forms
                     logger.Error(e, "Unable to retrieve characters");
                     errorProvider.SetError(accountNameTextBox, Strings.UnableToRetrieveCharacters);
                 }
+            }
+        }
+
+        private void SetAccountNameError()
+        {
+            if (charactersComboBox.Items.Count > 0)
+            {
+                okProvider.SetError(accountNameTextBox, string.Format(CultureInfo.CurrentCulture, Strings.CharactersFoundForAccount, accountName));
+                errorProvider.SetError(accountNameTextBox, "");
+            }
+            else
+            {
+                okProvider.SetError(accountNameTextBox, "");
+                errorProvider.SetError(accountNameTextBox, string.Format(CultureInfo.CurrentCulture, Strings.NoCharactersFoundForAccount, accountName));
             }
         }
 
@@ -465,18 +481,13 @@ namespace PoeRankingTracker.Forms
             ComboBoxItem item = comboBox.SelectedItem as ComboBoxItem;
             var selectedLanguage = item.Value as string;
             Properties.Settings.Default.Language = selectedLanguage;
-            SetCulture(selectedLanguage);
+            formService.SetCulture(selectedLanguage);
             InitializeTranslations();
             InitializeLanguagesCombo();
+            DisplayLeagueInfo();
+                        SetAccountNameError();
             CheckSessionId();
             CenterPanel();
-        }
-
-        private static void SetCulture(string language)
-        {
-            var culture = CultureInfo.GetCultureInfo(language);
-            Thread.CurrentThread.CurrentUICulture = culture;
-            CultureInfo.CurrentCulture = culture;
         }
 
         private void CheckSessionId()
@@ -504,9 +515,23 @@ namespace PoeRankingTracker.Forms
             }
         }
 
-        private void AdvancedOptionsLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void DisplayLeagueInfo()
         {
-            advancedOptionsPanel.Visible = !advancedOptionsPanel.Visible;
+            if (selectedLeague == null)
+            {
+                infoProvider.SetError(leagueRaceCombo, "");
+                errorProvider.SetError(leagueRaceCombo, Strings.CannotFindLeague);
+            }
+            else
+            {
+                errorProvider.SetError(leagueRaceCombo, "");
+                var info = string.Format(CultureInfo.CurrentCulture, Strings.StartDate, selectedLeague.StartAt.ToString("r", CultureInfo.CurrentCulture));
+                if (selectedLeague.EndAt != null)
+                {
+                    info += string.Format(CultureInfo.CurrentCulture, $"\n{Strings.EndDate}", selectedLeague.EndAt?.ToString("r", CultureInfo.CurrentCulture));
+                }
+                infoProvider.SetError(leagueRaceCombo, info);
+            }
         }
     }
 }

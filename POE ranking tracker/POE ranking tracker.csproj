@@ -149,6 +149,7 @@
     <Compile Include="src\Events\ApiEventArgs.cs" />
     <Compile Include="src\Events\RulesEventArgs.cs" />
     <Compile Include="src\Events\HttpRequestEventArgs.cs" />
+    <Compile Include="src\Installers\FormsInstaller.cs" />
     <Compile Include="src\Installers\ServicesInstaller.cs" />
     <Compile Include="src\Models\Account.cs" />
     <Compile Include="src\Models\Challenges.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="src\Models\LeagueRule.cs" />
     <Compile Include="src\RankingTrackerContext.cs" />
     <Compile Include="src\Services\CharacterService.cs" />
+    <Compile Include="src\Services\FormService.cs" />
     <Compile Include="src\Services\HttpClientService.cs" />
     <Compile Include="src\Services\LadderService.cs" />
     <Compile Include="Resources\Translations\Strings1.Designer.cs">
@@ -188,6 +190,7 @@
     </Compile>
     <Compile Include="src\Services\SemaphoreService.cs" />
     <Content Include="rank.ico" />
+    <None Include="Resources\Icons\StatusOK_16x.png" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
