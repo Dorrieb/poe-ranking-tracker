@@ -62,7 +62,6 @@
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.globalRankLabel = new System.Windows.Forms.Label();
             this.showExperienceBehindLabel = new System.Windows.Forms.Label();
-            this.progressBar = new PoeRankingTracker.Components.TrackerProgressBar();
             this.globalRankValue = new System.Windows.Forms.Label();
             this.showExperienceAheadLabel = new System.Windows.Forms.Label();
             this.showExperienceAheadValue = new System.Windows.Forms.Label();
@@ -77,6 +76,7 @@
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.infoProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.okProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.progressBar = new PoeRankingTracker.Components.TrackerProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.mainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.infoKeyProvider)).BeginInit();
@@ -436,18 +436,6 @@
             this.showExperienceBehindLabel.TabIndex = 8;
             this.showExperienceBehindLabel.Text = "XP to lose rank";
             // 
-            // progressBar
-            // 
-            this.progressBar.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.tableLayoutPanel.SetColumnSpan(this.progressBar, 2);
-            this.progressBar.Location = new System.Drawing.Point(0, 65);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(0);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(135, 5);
-            this.progressBar.Step = 1;
-            this.progressBar.TabIndex = 16;
-            this.progressBar.Value = 68;
-            // 
             // globalRankValue
             // 
             this.globalRankValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -560,9 +548,6 @@
             // fontDialog
             // 
             this.fontDialog.AllowScriptChange = false;
-            this.fontDialog.AllowSimulations = false;
-            this.fontDialog.AllowVectorFonts = false;
-            this.fontDialog.AllowVerticalFonts = false;
             this.fontDialog.Color = global::PoeRankingTracker.Properties.Settings.Default.FontColor;
             this.fontDialog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.fontDialog.MaxSize = 12;
@@ -578,6 +563,18 @@
             // 
             this.okProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
             this.okProvider.ContainerControl = this;
+            // 
+            // progressBar
+            // 
+            this.progressBar.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.tableLayoutPanel.SetColumnSpan(this.progressBar, 2);
+            this.progressBar.Location = new System.Drawing.Point(0, 65);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(0);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(135, 5);
+            this.progressBar.Step = 1;
+            this.progressBar.TabIndex = 16;
+            this.progressBar.Value = 68;
             // 
             // ConfigurationForm
             // 
