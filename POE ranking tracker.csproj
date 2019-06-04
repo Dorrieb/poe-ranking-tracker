@@ -244,9 +244,9 @@
     <Analyzer Include="packages\Microsoft.NetFramework.Analyzers.2.9.2\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\POE API client\POE API client.csproj">
+    <ProjectReference Include="..\POE Client API\POE Client API.csproj">
       <Project>{296b0bbe-9e3b-4338-9b17-0d34a7d1f484}</Project>
-      <Name>POE API client</Name>
+      <Name>POE Client API</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

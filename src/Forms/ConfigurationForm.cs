@@ -136,7 +136,7 @@ namespace PoeRankingTracker.Forms
         {
             try
             {
-                List<League> leagues = await httpClientService.GetLeaguesAsync().ConfigureAwait(true);
+                List<ILeague> leagues = await httpClientService.GetLeaguesAsync().ConfigureAwait(true);
                 CheckSessionId();
 
                 semaphoreService.CreateSemaphore();
