@@ -47,7 +47,7 @@ namespace PoeRankingTracker.Services
             var data = entries.ToArray();
             for (var i = start - 1; i > 0; i--)
             {
-                if (data[i].Character.Class == entry.Character.Class)
+                if (data[i].Character.CharacterClass == entry.Character.CharacterClass)
                 {
                     rank++;
                 }
