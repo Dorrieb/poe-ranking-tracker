@@ -10,7 +10,7 @@ namespace PoeRankingTracker.Services
     {
         void SetCulture(string language);
         Icon ResizeIcon(Icon icon, Size iconSize);
-        void DestroyIcon(Icon icon);
+        bool DestroyIcon(Icon icon);
     }
 
     public class FormService : IFormService
@@ -35,9 +35,9 @@ namespace PoeRankingTracker.Services
             return Icon.FromHandle(bitmap.GetHicon());
         }
 
-        public void DestroyIcon(Icon icon)
+        public bool DestroyIcon(Icon icon)
         {
-            SafeNativeMethods.DestroyIcon(icon.Handle);
+            return SafeNativeMethods.DestroyIcon(icon.Handle);
         }
     }
 
