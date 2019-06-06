@@ -48,7 +48,7 @@ namespace PoeRankingTracker.Forms
             leagueRaceLabel.Text = Strings.League;
             accountNameLabel.Text = Strings.AccountName;
             characterNameLabel.Text = Strings.CharacterName;
-            seesionIdLabel.Text = Strings.SessionId;
+            sessionIdLabel.Text = Strings.SessionId;
             showRankByClassCheckbox.Text = Strings.ShowRankByClass;
             showDeadsAheadCheckBox.Text = Strings.ShowDeadsAhead;
             showExperienceAheadCheckBox.Text = Strings.ShowExperienceAhead;

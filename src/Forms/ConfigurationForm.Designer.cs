@@ -40,7 +40,7 @@
             this.languageComboBox = new System.Windows.Forms.ComboBox();
             this.languageLabel = new System.Windows.Forms.Label();
             this.sessionIdTextBox = new System.Windows.Forms.TextBox();
-            this.seesionIdLabel = new System.Windows.Forms.Label();
+            this.sessionIdLabel = new System.Windows.Forms.Label();
             this.leagueUrlLink = new System.Windows.Forms.LinkLabel();
             this.charactersComboBox = new System.Windows.Forms.ComboBox();
             this.accountNameTextBox = new System.Windows.Forms.TextBox();
@@ -49,6 +49,7 @@
             this.warningKeyProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorKeyProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.stylePanel = new System.Windows.Forms.Panel();
+            this.resetFontButton = new System.Windows.Forms.Button();
             this.fontButton = new System.Windows.Forms.Button();
             this.backgroundColor = new System.Windows.Forms.Label();
             this.backgroundColorButton = new System.Windows.Forms.Button();
@@ -77,7 +78,6 @@
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.infoProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.okProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.resetFontButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.mainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.infoKeyProvider)).BeginInit();
@@ -144,7 +144,7 @@
             this.mainPanel.Controls.Add(this.languageComboBox);
             this.mainPanel.Controls.Add(this.languageLabel);
             this.mainPanel.Controls.Add(this.sessionIdTextBox);
-            this.mainPanel.Controls.Add(this.seesionIdLabel);
+            this.mainPanel.Controls.Add(this.sessionIdLabel);
             this.mainPanel.Controls.Add(this.leagueUrlLink);
             this.mainPanel.Controls.Add(this.charactersComboBox);
             this.mainPanel.Controls.Add(this.accountNameTextBox);
@@ -187,14 +187,14 @@
             this.sessionIdTextBox.UseSystemPasswordChar = true;
             this.sessionIdTextBox.TextChanged += new System.EventHandler(this.SessionIdTextBox_TextChanged);
             // 
-            // seesionIdLabel
+            // sessionIdLabel
             // 
-            this.seesionIdLabel.AutoSize = true;
-            this.seesionIdLabel.Location = new System.Drawing.Point(9, 133);
-            this.seesionIdLabel.Name = "seesionIdLabel";
-            this.seesionIdLabel.Size = new System.Drawing.Size(56, 13);
-            this.seesionIdLabel.TabIndex = 9;
-            this.seesionIdLabel.Text = "Session Id";
+            this.sessionIdLabel.AutoSize = true;
+            this.sessionIdLabel.Location = new System.Drawing.Point(9, 133);
+            this.sessionIdLabel.Name = "sessionIdLabel";
+            this.sessionIdLabel.Size = new System.Drawing.Size(56, 13);
+            this.sessionIdLabel.TabIndex = 9;
+            this.sessionIdLabel.Text = "Session Id";
             // 
             // leagueUrlLink
             // 
@@ -262,6 +262,16 @@
             this.stylePanel.Name = "stylePanel";
             this.stylePanel.Size = new System.Drawing.Size(380, 39);
             this.stylePanel.TabIndex = 13;
+            // 
+            // resetFontButton
+            // 
+            this.resetFontButton.Location = new System.Drawing.Point(101, 6);
+            this.resetFontButton.Name = "resetFontButton";
+            this.resetFontButton.Size = new System.Drawing.Size(75, 23);
+            this.resetFontButton.TabIndex = 13;
+            this.resetFontButton.Text = "Reset font";
+            this.resetFontButton.UseVisualStyleBackColor = true;
+            this.resetFontButton.Click += new System.EventHandler(this.ResetFontButton_Click);
             // 
             // fontButton
             // 
@@ -578,16 +588,6 @@
             this.okProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
             this.okProvider.ContainerControl = this;
             // 
-            // resetFontButton
-            // 
-            this.resetFontButton.Location = new System.Drawing.Point(101, 6);
-            this.resetFontButton.Name = "resetFontButton";
-            this.resetFontButton.Size = new System.Drawing.Size(75, 23);
-            this.resetFontButton.TabIndex = 13;
-            this.resetFontButton.Text = "Reset font";
-            this.resetFontButton.UseVisualStyleBackColor = true;
-            this.resetFontButton.Click += new System.EventHandler(this.ResetFontButton_Click);
-            // 
             // ConfigurationForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -643,7 +643,7 @@
         private System.Windows.Forms.Label accountNameLabel;
         private System.Windows.Forms.LinkLabel leagueUrlLink;
         private System.Windows.Forms.TextBox sessionIdTextBox;
-        private System.Windows.Forms.Label seesionIdLabel;
+        private System.Windows.Forms.Label sessionIdLabel;
         private System.Windows.Forms.FontDialog fontDialog;
         private System.Windows.Forms.Label languageLabel;
         private System.Windows.Forms.ComboBox languageComboBox;
