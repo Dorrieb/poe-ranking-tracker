@@ -62,6 +62,7 @@
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.globalRankLabel = new System.Windows.Forms.Label();
             this.showExperienceBehindLabel = new System.Windows.Forms.Label();
+            this.progressBar = new PoeRankingTracker.Components.TrackerProgressBar();
             this.globalRankValue = new System.Windows.Forms.Label();
             this.showExperienceAheadLabel = new System.Windows.Forms.Label();
             this.showExperienceAheadValue = new System.Windows.Forms.Label();
@@ -76,7 +77,7 @@
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.infoProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.okProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.progressBar = new PoeRankingTracker.Components.TrackerProgressBar();
+            this.resetFontButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.mainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.infoKeyProvider)).BeginInit();
@@ -253,6 +254,7 @@
             // stylePanel
             // 
             this.stylePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.stylePanel.Controls.Add(this.resetFontButton);
             this.stylePanel.Controls.Add(this.fontButton);
             this.stylePanel.Controls.Add(this.backgroundColor);
             this.stylePanel.Controls.Add(this.backgroundColorButton);
@@ -265,7 +267,7 @@
             // 
             this.fontButton.AutoSize = true;
             this.fontButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.fontButton.Location = new System.Drawing.Point(22, 6);
+            this.fontButton.Location = new System.Drawing.Point(14, 6);
             this.fontButton.Name = "fontButton";
             this.fontButton.Size = new System.Drawing.Size(74, 23);
             this.fontButton.TabIndex = 12;
@@ -276,7 +278,7 @@
             // backgroundColor
             // 
             this.backgroundColor.AutoSize = true;
-            this.backgroundColor.Location = new System.Drawing.Point(146, 11);
+            this.backgroundColor.Location = new System.Drawing.Point(186, 11);
             this.backgroundColor.Name = "backgroundColor";
             this.backgroundColor.Size = new System.Drawing.Size(91, 13);
             this.backgroundColor.TabIndex = 8;
@@ -286,7 +288,7 @@
             // 
             this.backgroundColorButton.BackColor = global::PoeRankingTracker.Properties.Settings.Default.BackgroundColor;
             this.backgroundColorButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::PoeRankingTracker.Properties.Settings.Default, "backgroundColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.backgroundColorButton.Location = new System.Drawing.Point(243, 6);
+            this.backgroundColorButton.Location = new System.Drawing.Point(284, 6);
             this.backgroundColorButton.Name = "backgroundColorButton";
             this.backgroundColorButton.Size = new System.Drawing.Size(75, 23);
             this.backgroundColorButton.TabIndex = 10;
@@ -436,6 +438,18 @@
             this.showExperienceBehindLabel.TabIndex = 8;
             this.showExperienceBehindLabel.Text = "XP to lose rank";
             // 
+            // progressBar
+            // 
+            this.progressBar.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.tableLayoutPanel.SetColumnSpan(this.progressBar, 2);
+            this.progressBar.Location = new System.Drawing.Point(0, 65);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(0);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(135, 5);
+            this.progressBar.Step = 1;
+            this.progressBar.TabIndex = 16;
+            this.progressBar.Value = 68;
+            // 
             // globalRankValue
             // 
             this.globalRankValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -564,17 +578,15 @@
             this.okProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
             this.okProvider.ContainerControl = this;
             // 
-            // progressBar
+            // resetFontButton
             // 
-            this.progressBar.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.tableLayoutPanel.SetColumnSpan(this.progressBar, 2);
-            this.progressBar.Location = new System.Drawing.Point(0, 65);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(0);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(135, 5);
-            this.progressBar.Step = 1;
-            this.progressBar.TabIndex = 16;
-            this.progressBar.Value = 68;
+            this.resetFontButton.Location = new System.Drawing.Point(101, 6);
+            this.resetFontButton.Name = "resetFontButton";
+            this.resetFontButton.Size = new System.Drawing.Size(75, 23);
+            this.resetFontButton.TabIndex = 13;
+            this.resetFontButton.Text = "Reset font";
+            this.resetFontButton.UseVisualStyleBackColor = true;
+            this.resetFontButton.Click += new System.EventHandler(this.ResetFontButton_Click);
             // 
             // ConfigurationForm
             // 
@@ -666,6 +678,7 @@
         private Components.TrackerProgressBar progressBar;
         private System.Windows.Forms.ErrorProvider infoProvider;
         private System.Windows.Forms.ErrorProvider okProvider;
+        private System.Windows.Forms.Button resetFontButton;
     }
 }
 
