@@ -2,6 +2,7 @@
 using PoeRankingTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace PoeRankingTracker.Services
 {
@@ -15,6 +16,7 @@ namespace PoeRankingTracker.Services
         int GetRank(List<IEntry> entries, string characterName);
         long GetExperienceAhead(List<IEntry> entries, IEntry entry);
         long GetExperienceBehind(List<IEntry> entries, IEntry entry);
+        IEntry GetEntry(List<IEntry> entries, string characterName);
     }
 
     public class CharacterService : ICharacterService
@@ -115,6 +117,23 @@ namespace PoeRankingTracker.Services
                 n = GetExperienceDifference(entry, data[i + 1]);
             }
             return n;
+        }
+
+        public IEntry GetEntry(List<IEntry> entries, string characterName)
+        {
+            Contract.Requires(entries != null);
+
+            IEntry entryFound = null;
+
+            foreach(var entry in entries)
+            {
+                if (entry.Character.Name == characterName)
+                {
+                    entryFound = entry;
+                }
+            }
+
+            return entryFound;
         }
     }
 }

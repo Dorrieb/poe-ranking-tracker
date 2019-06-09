@@ -130,6 +130,8 @@ namespace PoeRankingTracker.Forms
             ILadder ladder = await httpClientService.GetLadderAsync(configuration.League.Id, configuration.AccountName).ConfigureAwait(true);
             int rank = characterService.GetRank(ladder, configuration.Entry.Character.Name);
             List<IEntry> entries = await httpClientService.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name, rank).ConfigureAwait(true);
+            var entryRefreshed = characterService.GetEntry(entries, configuration.Entry.Character.Name);
+            configuration.Entry = entryRefreshed;
             ComputeRank(entries);
             ComputeRankByClass(entries);
             ComputeNumberOfDeadsAhead(entries);
