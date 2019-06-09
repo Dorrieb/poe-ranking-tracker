@@ -571,7 +571,6 @@
             // 
             // fontDialog
             // 
-            this.fontDialog.AllowScriptChange = false;
             this.fontDialog.Color = global::PoeRankingTracker.Properties.Settings.Default.FontColor;
             this.fontDialog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.fontDialog.MaxSize = 12;

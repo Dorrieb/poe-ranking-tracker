@@ -540,7 +540,6 @@ namespace PoeRankingTracker.Forms
             Font font = new Font("Microsoft Sans Serif", 8);
             Color color = Color.Black;
 
-            fontDialog.Reset();
             fontDialog.Font = font;
             fontDialog.Color = color;
             Properties.Settings.Default.Font = font;
