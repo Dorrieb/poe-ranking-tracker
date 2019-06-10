@@ -168,6 +168,10 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Content Include="rank.ico" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="NLog.release.config" />
     <None Include="Resources\Icons\StatusOK_16x.png" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
@@ -198,9 +202,7 @@
     <EmbeddedResource Include="src\Forms\TrackerForm.resx">
       <DependentUpon>TrackerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="NLog.debug.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -255,4 +257,8 @@
     <Error Condition="!Exists('..\packages\Microsoft.NetFramework.Analyzers.2.9.3\build\Microsoft.NetFramework.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetFramework.Analyzers.2.9.3\build\Microsoft.NetFramework.Analyzers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.3\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.3\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>del "$(ProjectDir)NLog.config"
+copy "$(ProjectDir)NLog.$(ConfigurationName).config" "$(ProjectDir)NLog.config"</PreBuildEvent>
+  </PropertyGroup>
 </Project>
