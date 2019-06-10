@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -24,19 +25,24 @@ namespace PoeRankingTracker.Services
 
         public Icon ResizeIcon(Icon icon, Size iconSize)
         {
-            Bitmap bitmap = new Bitmap(iconSize.Width, iconSize.Height);
+            Contract.Requires(icon != null);
 
-            using (Graphics g = Graphics.FromImage(bitmap))
+            using (Bitmap bitmap = new Bitmap(iconSize.Width, iconSize.Height))
             {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.DrawImage(icon.ToBitmap(), new Rectangle(Point.Empty, iconSize));
-            }
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(icon.ToBitmap(), new Rectangle(Point.Empty, iconSize));
+                }
 
-            return Icon.FromHandle(bitmap.GetHicon());
+                return Icon.FromHandle(bitmap.GetHicon());
+            }
         }
 
         public bool DestroyIcon(Icon icon)
         {
+            Contract.Requires(icon != null);
+
             return SafeNativeMethods.DestroyIcon(icon.Handle);
         }
     }

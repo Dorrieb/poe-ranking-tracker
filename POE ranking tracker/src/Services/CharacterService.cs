@@ -44,12 +44,14 @@ namespace PoeRankingTracker.Services
 
         public int GetRankByClass(List<IEntry> entries, IEntry entry)
         {
+            Contract.Requires(entries != null);
+
             var rank = 1;
             int start = entries.IndexOf(entry);
             var data = entries.ToArray();
             for (var i = start - 1; i > 0; i--)
             {
-                if (data[i].Character.CharacterClass == entry.Character.CharacterClass)
+                if (entry != null && data[i].Character.CharacterClass == entry.Character.CharacterClass)
                 {
                     rank++;
                 }
@@ -59,6 +61,8 @@ namespace PoeRankingTracker.Services
 
         public int GetNumbersOfDeadsAhead(List<IEntry> entries, IEntry entry)
         {
+            Contract.Requires(entries != null);
+
             var n = 0;
             int start = entries.IndexOf(entry);
             var data = entries.ToArray();
@@ -74,16 +78,22 @@ namespace PoeRankingTracker.Services
 
         public bool IsEntryInvalid(IEntry entry)
         {
+            Contract.Requires(entry != null);
+
             return entry.Dead || entry.Retired;
         }
 
         public long GetExperienceDifference(IEntry entry1, IEntry entry2)
         {
+            Contract.Requires(entry1 != null && entry2 != null);
+
             return entry1.Character.Experience - entry2.Character.Experience;
         }
 
         public int GetRank(List<IEntry> entries, string characterName)
         {
+            Contract.Requires(entries != null);
+
             var rank = defaultRank;
 
             var match = entries.Find(e => e.Character.Name == characterName);
@@ -97,6 +107,8 @@ namespace PoeRankingTracker.Services
 
         public long GetExperienceAhead(List<IEntry> entries, IEntry entry)
         {
+            Contract.Requires(entries != null);
+
             long n = 0;
             int i = entries.IndexOf(entry);
             var data = entries.ToArray();
@@ -109,6 +121,8 @@ namespace PoeRankingTracker.Services
 
         public long GetExperienceBehind(List<IEntry> entries, IEntry entry)
         {
+            Contract.Requires(entries != null);
+
             long n = 0;
             int i = entries.IndexOf(entry);
             var data = entries.ToArray();

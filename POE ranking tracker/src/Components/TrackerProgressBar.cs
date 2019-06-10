@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics.Contracts;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace PoeRankingTracker.Components
@@ -20,6 +21,8 @@ namespace PoeRankingTracker.Components
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            Contract.Requires(e != null);
+
             Rectangle rec = e.ClipRectangle;
             var width = (int)(rec.Width * ((double)Value / Maximum)) - 4;
             var height = rec.Height - 4;

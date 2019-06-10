@@ -108,10 +108,12 @@ namespace PoeApiClient.Services
 
         private void CreateWindsorContainer()
         {
+#pragma warning disable CA2000
             container = new WindsorContainer()
                 .Install(
                     FromAssembly.This()
                  );
+#pragma warning disable CA2000
         }
 
         public async Task SetSessionId(string sessionId)
@@ -227,6 +229,8 @@ namespace PoeApiClient.Services
 
         public async Task<ILeague> GetLeagueAsync(string leagueId)
         {
+            Contract.Requires(leagueId != null);
+
             League league = null;
 
             if (leagueId.Length > 0)
@@ -282,6 +286,7 @@ namespace PoeApiClient.Services
             }
             else if (429 == (int)response.StatusCode)
             {
+                CancelPendingRequests();
                 OnProcessGetRequestEnded(false);
                 // Retry after waiting the appropriate time
                 int delay;
@@ -293,9 +298,11 @@ namespace PoeApiClient.Services
                 {
                     delay = GetTimeout() * 1000;
                 }
-                logger.Debug($"Sleep for {delay}");
-                CancelPendingRequests();
-                Thread.Sleep(delay);
+                if (delay > 0)
+                {
+                    logger.Debug($"Sleep for {delay}");
+                    Thread.Sleep(delay);
+                }
 
                 return await ProcessGetRequest(uri).ConfigureAwait(false);
             }
@@ -517,9 +524,9 @@ namespace PoeApiClient.Services
         {
             if (disposing)
             {
-                client.Dispose();
-                tokenSource.Dispose();
-                container.Dispose();
+                client?.Dispose();
+                tokenSource?.Dispose();
+                container?.Dispose();
                 handler?.Dispose();
             }
         }

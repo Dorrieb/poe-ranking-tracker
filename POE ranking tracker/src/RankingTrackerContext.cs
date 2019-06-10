@@ -54,10 +54,12 @@ namespace PoeRankingTracker
 
         private void CreateWindsorContainer()
         {
+#pragma warning disable CA2000
             container = new WindsorContainer()
                 .Install(
                     FromAssembly.This()
                  );
+#pragma warning restore CA2000
         }
 
         private void OnApplicationExit(object sender, EventArgs e)

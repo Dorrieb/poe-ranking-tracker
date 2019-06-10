@@ -1,0 +1,50 @@
+2019-06-10 12:38:07.7928|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/leagues - start
+2019-06-10 12:38:07.8241|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - start ()
+2019-06-10 12:38:07.8241|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - end ()
+2019-06-10 12:38:07.8241|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/leagues - begin
+2019-06-10 12:38:07.8397|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/leagues - start
+2019-06-10 12:38:07.8397|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - start ()
+2019-06-10 12:38:07.8397|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - end ()
+2019-06-10 12:38:07.8397|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/leagues - begin
+2019-06-10 12:38:08.5741|DEBUG|PoeApiClient.Services.HttpClientService|Rules : 10:5:10,20:10:30,30:10:300 - Rules state : 1:5:0,1:10:0,1:10:0
+2019-06-10 12:38:08.5741|DEBUG|PoeApiClient.Services.HttpClientService|Rules : 10:5:10,20:10:30,30:10:300 - Rules state : 2:5:0,2:10:0,2:10:0
+2019-06-10 12:38:08.7616|DEBUG|PoeApiClient.Services.SemaphoreService|Create semaphore with initial = 8 and max = 10
+2019-06-10 12:38:08.7772|DEBUG|PoeApiClient.Services.SemaphoreService|Release 0 semaphores
+2019-06-10 12:38:08.7928|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?accountName=morinfa - start
+2019-06-10 12:38:08.7928|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - start (8)
+2019-06-10 12:38:08.7928|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - end (7)
+2019-06-10 12:38:08.7928|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?accountName=morinfa - begin
+2019-06-10 12:38:09.5116|DEBUG|PoeApiClient.Services.HttpClientService|Rules : 10:5:10,20:10:30,30:10:300 - Rules state : 3:5:0,3:10:0,3:10:0
+2019-06-10 12:38:11.8553|DEBUG|PoeRankingTracker.Forms.TrackerForm|RetrieveData
+2019-06-10 12:38:11.8553|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?accountName=morinfa - start
+2019-06-10 12:38:11.8553|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - start (7)
+2019-06-10 12:38:11.8553|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - end (6)
+2019-06-10 12:38:11.8553|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?accountName=morinfa - begin
+2019-06-10 12:38:12.0897|DEBUG|PoeApiClient.Services.HttpClientService|Rules : 10:5:10,20:10:30,30:10:300 - Rules state : 4:5:0,4:10:0,4:10:0
+2019-06-10 12:38:12.0897|DEBUG|PoeApiClient.Services.HttpClientService|GetEntries
+2019-06-10 12:38:12.0897|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?accountName=morinfa - start
+2019-06-10 12:38:12.0897|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - start (6)
+2019-06-10 12:38:12.0897|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - end (5)
+2019-06-10 12:38:12.0897|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?accountName=morinfa - begin
+2019-06-10 12:38:12.6678|DEBUG|PoeApiClient.Services.HttpClientService|Rules : 10:5:10,20:10:30,30:10:300 - Rules state : 5:5:0,5:10:0,5:10:0
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?offset=400&limit=200 - start
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?offset=200&limit=200 - start
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - start (5)
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - end (4)
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?offset=0&limit=200 - start
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - start (4)
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?offset=200&limit=200 - begin
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - end (3)
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?offset=0&limit=200 - begin
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?offset=600&limit=200 - start
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - start (3)
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - end (2)
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?offset=600&limit=200 - begin
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - start (5)
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.SemaphoreService|Wait for semaphore - end (1)
+2019-06-10 12:38:12.6834|DEBUG|PoeApiClient.Services.HttpClientService|Process GET request uri=https://api.pathofexile.com/ladders/SSF Legion HC?offset=400&limit=200 - begin
+2019-06-10 12:38:13.0897|DEBUG|PoeApiClient.Services.HttpClientService|Rules : 10:5:10,20:10:30,30:10:300 - Rules state : 4:5:0,6:10:0,6:10:0
+2019-06-10 12:38:14.9334|DEBUG|PoeApiClient.Services.HttpClientService|Rules : 10:5:10,20:10:30,30:10:300 - Rules state : 6:5:0,8:10:0,8:10:0
+2019-06-10 12:38:15.9178|DEBUG|PoeApiClient.Services.HttpClientService|Rules : 10:5:10,20:10:30,30:10:300 - Rules state : 5:5:0,7:10:0,7:10:0
+2019-06-10 12:38:17.4178|DEBUG|PoeApiClient.Services.HttpClientService|Rules : 10:5:10,20:10:30,30:10:300 - Rules state : 6:5:0,9:10:0,9:10:0
+2019-06-10 12:38:18.5430|DEBUG|PoeApiClient.Services.SemaphoreService|Cancel tasks

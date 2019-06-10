@@ -13,15 +13,17 @@ using System.Linq;
 namespace PoeRankingTrackerTests.Installers
 {
     [TestClass]
-    public class ServicesInstallerTest : BaseUnitTest
+    public class ServicesInstallerTest : BaseUnitTest, IDisposable
     {
         private IWindsorContainer container;
 
         [TestInitialize]
         public void Setup()
         {
+#pragma warning disable CA2000
             container = new WindsorContainer()
                 .Install(new ServicesInstaller());
+#pragma warning restore CA2000
         }
 
         [TestMethod]
@@ -91,6 +93,20 @@ namespace PoeRankingTrackerTests.Installers
             registered[1] = GetImplementationTypesFor(typeof(IFormService), container)[0];
 
             return registered;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                container?.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

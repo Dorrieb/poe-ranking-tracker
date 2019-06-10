@@ -13,14 +13,16 @@ namespace PoeRankingTrackerTests.Services
     [TestClass]
     public class FormsServiceTest : BaseUnitTest
     {
-        private IWindsorContainer container;
         private IFormService formsService;
 
         [TestInitialize]
         public void TestSetup()
         {
-            container = new WindsorContainer().Install(new ServicesInstaller());
-            formsService = container.Resolve<IFormService>();
+            using (IWindsorContainer container = new WindsorContainer())
+            {
+                container.Install(new ServicesInstaller());
+                formsService = container.Resolve<IFormService>();
+            }
         }
 
         [TestMethod]
@@ -52,12 +54,6 @@ namespace PoeRankingTrackerTests.Services
             var icon = formsService.ResizeIcon(SystemIcons.Exclamation, SystemInformation.SmallIconSize);
             var result = formsService.DestroyIcon(icon);
             Assert.IsTrue(result);
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            container.Dispose();
         }
     }
 }

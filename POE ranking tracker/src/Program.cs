@@ -10,7 +10,10 @@ namespace PoeRankingTracker
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new RankingTrackerContext());
+            using (var context = new RankingTrackerContext())
+            {
+                Application.Run(context);
+            }
         }
     }
 }

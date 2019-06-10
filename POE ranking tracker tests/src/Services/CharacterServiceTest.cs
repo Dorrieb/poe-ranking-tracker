@@ -12,7 +12,6 @@ namespace PoeRankingTrackerTests.Services
     [TestClass]
     public class CharacterServiceTest : BaseUnitTest
     {
-        private IWindsorContainer container;
         private ILadder ladder;
         private Ladder ladder96;
         private ICharacterService characterService;
@@ -20,13 +19,15 @@ namespace PoeRankingTrackerTests.Services
         [TestInitialize]
         public void TestSetup()
         {
-            container = new WindsorContainer().Install(new ServicesInstaller());
-
-            characterService = container.Resolve<ICharacterService>();
-            string ladderJson = Encoding.UTF8.GetString(POEToolsTestsBase.Properties.Resources.Ladder);
-            ladder = JsonConvert.DeserializeObject<Ladder>(ladderJson, GetJsonSettings());
-            string ladder96Json = Encoding.UTF8.GetString(POEToolsTestsBase.Properties.Resources.Ladder96);
-            ladder96 = JsonConvert.DeserializeObject<Ladder>(ladder96Json, GetJsonSettings());
+            using (IWindsorContainer container = new WindsorContainer())
+            {
+                container.Install(new ServicesInstaller());
+                characterService = container.Resolve<ICharacterService>();
+                string ladderJson = Encoding.UTF8.GetString(POEToolsTestsBase.Properties.Resources.Ladder);
+                ladder = JsonConvert.DeserializeObject<Ladder>(ladderJson, GetJsonSettings());
+                string ladder96Json = Encoding.UTF8.GetString(POEToolsTestsBase.Properties.Resources.Ladder96);
+                ladder96 = JsonConvert.DeserializeObject<Ladder>(ladder96Json, GetJsonSettings());
+            }
         }
 
         [TestMethod]
@@ -265,12 +266,6 @@ namespace PoeRankingTrackerTests.Services
             Assert.AreEqual(35110, n7);
             Assert.AreEqual(10226, n8);
             Assert.AreEqual(0, n9);
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            container.Dispose();
         }
     }
 }
