@@ -6,6 +6,7 @@ using PoeRankingTracker.Resources.Translations;
 using PoeRankingTracker.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Globalization;
 using System.Timers;
@@ -85,6 +86,8 @@ namespace PoeRankingTracker.Forms
 
         public void SetConfiguration(TrackerConfiguration configuration)
         {
+            Contract.Requires(configuration != null);
+
             this.configuration = configuration;
             InitializeTranslations();
             SetStyles();
@@ -129,14 +132,17 @@ namespace PoeRankingTracker.Forms
 
             ILadder ladder = await httpClientService.GetLadderAsync(configuration.League.Id, configuration.AccountName).ConfigureAwait(true);
             int rank = characterService.GetRank(ladder, configuration.Entry.Character.Name);
-            List<IEntry> entries = await httpClientService.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name, rank).ConfigureAwait(true);
+            List<IEntry> entries = await httpClientService.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name, rank).ConfigureAwait(true); // TODO task cancelled exception
             var entryRefreshed = characterService.GetEntry(entries, configuration.Entry.Character.Name);
-            configuration.Entry = entryRefreshed;
-            ComputeRank(entries);
-            ComputeRankByClass(entries);
-            ComputeNumberOfDeadsAhead(entries);
-            ComputeExperienceAhead(entries);
-            ComputeExperienceBehind(entries);
+            if (entryRefreshed != null)
+            {
+                configuration.Entry = entryRefreshed;
+                ComputeRank(entries);
+                ComputeRankByClass(entries);
+                ComputeNumberOfDeadsAhead(entries);
+                ComputeExperienceAhead(entries);
+                ComputeExperienceBehind(entries);
+            }
 
             timer?.Start();
         }

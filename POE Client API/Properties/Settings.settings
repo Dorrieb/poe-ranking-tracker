@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="POE_API_client.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="BaseUri" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://api.pathofexile.com</Value>
+    </Setting>
+    <Setting Name="LaddersPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ladders/{0}?accountName={1}</Value>
+    </Setting>
+    <Setting Name="LaddersAllPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ladders/{0}?offset={1}&amp;limit={2}</Value>
+    </Setting>
+    <Setting Name="LeaguesPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">leagues</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

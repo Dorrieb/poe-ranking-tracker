@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POE ranking tracker", "POE ranking tracker\POE ranking tracker.csproj", "{A4CAFFB3-702B-4548-893D-A4023B876A30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POE ranking tracker tests", "POE ranking tracker tests\POE ranking tracker tests.csproj", "{6B947A88-44FB-443E-B428-95BBB8B433FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POE Client API", "POE Client API\POE Client API.csproj", "{296B0BBE-9E3B-4338-9B17-0D34A7D1F484}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POE Client API Tests", "POE Client API Tests\POE Client API Tests.csproj", "{BE8D70B2-6C08-4EBD-A7E1-23B039996135}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POE Tools Tests Base", "POE Tools Tests Base\POE Tools Tests Base.csproj", "{47CEAE2C-77C8-45BC-9586-FACA60376367}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A4CAFFB3-702B-4548-893D-A4023B876A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4CAFFB3-702B-4548-893D-A4023B876A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4CAFFB3-702B-4548-893D-A4023B876A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4CAFFB3-702B-4548-893D-A4023B876A30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B947A88-44FB-443E-B428-95BBB8B433FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B947A88-44FB-443E-B428-95BBB8B433FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B947A88-44FB-443E-B428-95BBB8B433FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B947A88-44FB-443E-B428-95BBB8B433FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{296B0BBE-9E3B-4338-9B17-0D34A7D1F484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{296B0BBE-9E3B-4338-9B17-0D34A7D1F484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{296B0BBE-9E3B-4338-9B17-0D34A7D1F484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{296B0BBE-9E3B-4338-9B17-0D34A7D1F484}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE8D70B2-6C08-4EBD-A7E1-23B039996135}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE8D70B2-6C08-4EBD-A7E1-23B039996135}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE8D70B2-6C08-4EBD-A7E1-23B039996135}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8D70B2-6C08-4EBD-A7E1-23B039996135}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47CEAE2C-77C8-45BC-9586-FACA60376367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47CEAE2C-77C8-45BC-9586-FACA60376367}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47CEAE2C-77C8-45BC-9586-FACA60376367}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47CEAE2C-77C8-45BC-9586-FACA60376367}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {449EFED5-D205-4184-AA13-BA990CA9207D}
+	EndGlobalSection
+EndGlobal
