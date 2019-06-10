@@ -261,6 +261,8 @@ namespace PoeRankingTracker.Forms
         {
             Hide();
 
+            semaphoreService.CreateSemaphore();
+
             var configuration = new TrackerConfiguration
             {
                 League = selectedLeague,
@@ -446,7 +448,6 @@ namespace PoeRankingTracker.Forms
                 Properties.Settings.Default.SessionId = tb.Text;
                 await httpClientService.SetSessionId(tb.Text).ConfigureAwait(true);
                 CheckSessionId();
-                semaphoreService.CreateSemaphore();
             }
         }
 

@@ -262,54 +262,66 @@ namespace PoeApiClient.Services
 
         private async Task<HttpResponseMessage> ProcessGetRequest(Uri uri)
         {
-            logger.Debug($"Process GET request uri={uri} - start");
-            OnProcessGetRequestStarted();
-            HttpResponseMessage response;
-
-            logger.Debug($"Process GET request uri={uri} - begin");
-
-            var message = new HttpRequestMessage(HttpMethod.Get, uri);
-            message.Headers.Add("Cookie", $"POESESSID={sessionId}");
-            response = await client.SendAsync(message, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
-
-            int timeout = GetTimeout();
-            if (timeout > 0)
+            try
             {
-                await Task.Delay(timeout * 1000).ConfigureAwait(true);
-            }
-            UpdateRules(response.Headers);
+                logger.Debug($"Process GET request uri={uri} - start");
+                OnProcessGetRequestStarted();
+                HttpResponseMessage response;
 
-            if (response.IsSuccessStatusCode)
-            {
-                OnProcessGetRequestEnded(true);
-                return response;
-            }
-            else if (429 == (int)response.StatusCode)
-            {
-                CancelPendingRequests();
-                OnProcessGetRequestEnded(false);
-                // Retry after waiting the appropriate time
-                int delay;
-                if (response.Headers.RetryAfter != null)
+                int timeout = GetTimeout();
+                if (timeout > 0)
                 {
-                    delay = (int)response.Headers.RetryAfter.Delta.Value.TotalMilliseconds;
+                    logger.Debug($"Wait for timeout {timeout}");
+                    await Task.Delay(timeout * 1000).ConfigureAwait(true);
+                }
+
+                logger.Debug($"Process GET request uri={uri} - begin");
+
+                var message = new HttpRequestMessage(HttpMethod.Get, uri);
+                message.Headers.Add("Cookie", $"POESESSID={sessionId}");
+                response = await client.SendAsync(message, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
+
+                UpdateRules(response.Headers);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    logger.Debug($"Process GET request uri={uri} - success");
+                    OnProcessGetRequestEnded(true);
+                    return response;
+                }
+                else if (429 == (int)response.StatusCode)
+                {
+                    logger.Debug($"Process GET request uri={uri} - rate limited");
+                    CancelPendingRequests();
+                    OnProcessGetRequestEnded(false);
+                    // Retry after waiting the appropriate time
+                    int delay;
+                    if (response.Headers.RetryAfter != null)
+                    {
+                        delay = (int)response.Headers.RetryAfter.Delta.Value.TotalMilliseconds;
+                    }
+                    else
+                    {
+                        delay = GetTimeout() * 1000;
+                    }
+                    if (delay > 0)
+                    {
+                        logger.Debug($"Wait before retry {delay}");
+                        await Task.Delay(delay * 1000).ConfigureAwait(true);
+                    }
+
+                    return await ProcessGetRequest(uri).ConfigureAwait(false);
                 }
                 else
                 {
-                    delay = GetTimeout() * 1000;
+                    OnProcessGetRequestEnded(false);
+                    logger.Error($"Request error for uri {uri.AbsoluteUri} failed with code {response.StatusCode}");
+                    return null;
                 }
-                if (delay > 0)
-                {
-                    logger.Debug($"Sleep for {delay}");
-                    Thread.Sleep(delay);
-                }
-
-                return await ProcessGetRequest(uri).ConfigureAwait(false);
             }
-            else
+            catch (TaskCanceledException e)
             {
-                OnProcessGetRequestEnded(false);
-                logger.Error($"Request error for uri {uri.AbsoluteUri} failed with code {response.StatusCode}");
+                logger.Debug(e, "Task cancelled");
                 return null;
             }
         }

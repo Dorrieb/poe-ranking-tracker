@@ -1,7 +1,5 @@
 ﻿using PoeApiClient.Events;
-using PoeApiClient.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Timers;
@@ -95,11 +93,22 @@ namespace PoeApiClient.Services
         {
             if (semaphore != null)
             {
-                int i = semaphoreNumber - semaphore.CurrentCount - httpClientService.GetCurrentRequestLimit();
-                logger.Debug($"Release {i} semaphores");
+                int requestLimit = httpClientService.GetCurrentRequestLimit();
+                int i = semaphoreNumber - semaphore.CurrentCount - requestLimit;
                 if (i > 0)
                 {
+                    logger.Debug($"Release {i} semaphores");
                     semaphore.Release(i);
+                }
+                else if (semaphore.CurrentCount == 0)
+                {
+                    int timeout = httpClientService.GetTimeout();
+                    if (timeout > 0)
+                    {
+                        Thread.Sleep(timeout * 1000);
+                    }
+                    logger.Debug("Release all semaphores");
+                    semaphore.Release(semaphoreNumber);
                 }
             }
         }
