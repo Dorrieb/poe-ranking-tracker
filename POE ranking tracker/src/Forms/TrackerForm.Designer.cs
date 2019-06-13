@@ -28,7 +28,7 @@
             this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser.Name = "webBrowser";
             this.webBrowser.ScrollBarsEnabled = false;
-            this.webBrowser.Size = new System.Drawing.Size(263, 106);
+            this.webBrowser.Size = new System.Drawing.Size(263, 135);
             this.webBrowser.TabIndex = 0;
             this.webBrowser.Url = new System.Uri("about:blank", System.UriKind.Absolute);
             this.webBrowser.WebBrowserShortcutsEnabled = false;
@@ -40,7 +40,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(263, 106);
+            this.ClientSize = new System.Drawing.Size(263, 135);
             this.ControlBox = false;
             this.Controls.Add(this.webBrowser);
             this.Cursor = System.Windows.Forms.Cursors.SizeAll;

@@ -1,34 +1,44 @@
 ﻿<html>
     <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
         <style>
             body {
                 font-family: Arial;
                 margin: 0;
             }
+
             #container {
                 background-color: #393939;
                 padding: 5px;
                 display: inline-block;
                 width: 125px;
             }
+
             table {
             }
-            table th {
-                color: yellowgreen;
-                font-size: 12px;
-                font-weight: bold;
-            }
-            table td {
-                text-align: center;
-            }
+
+                table th {
+                    color: yellowgreen;
+                    font-size: 12px;
+                    font-weight: bold;
+                }
+
+                table td {
+                    text-align: center;
+                }
+
             .label {
                 color: white;
                 font-size: 10px;
             }
+
             .value {
                 font-size: 10px;
                 font-weight: bold;
                 color: yellowgreen;
+            }
+            progress {
+                width: 100%;
             }
         </style>
     </head>
@@ -72,6 +82,7 @@
                     </tr>
                 </tbody>
             </table>
+            <progress max="100" value="0"></progress>
         </div>
     </body>
 </html>

@@ -189,7 +189,7 @@ namespace PoeApiClient.Services
                 }
                 await Task.WhenAll(tasks).ConfigureAwait(true);
 
-                OnGetEntriesEnded();
+                OnGetEntriesEnded(tasksNumber);
 
                 foreach(var nextEntries in bag)
                 {
@@ -516,9 +516,12 @@ namespace PoeApiClient.Services
             GetEntriesIncremented?.Invoke(this, args);
         }
 
-        private void OnGetEntriesEnded()
+        private void OnGetEntriesEnded(int value)
         {
-            ApiEventArgs args = new ApiEventArgs();
+            ApiEventArgs args = new ApiEventArgs
+            {
+                Value = value
+            };
             GetEntriesEnded?.Invoke(this, args);
         }
 

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -25,6 +26,8 @@ namespace PoeRankingTracker.Forms
         private IHtmlService htmlService;
         private string templateContent;
         private bool initialLoading = false;
+        private int currentProgress = 0;
+        private int maxProgress = 0;
 
         public TrackerForm(IHttpClientService httpClientService, ICharacterService characterService, IHtmlService htmlService)
         {
@@ -60,10 +63,13 @@ namespace PoeRankingTracker.Forms
 
         private void ProgressStarted(object sender, ApiEventArgs args)
         {
+            currentProgress = 0;
+            maxProgress = args.Value;
         }
 
         private void ProgressIncremented(object sender, ApiEventArgs args)
         {
+            currentProgress += args.Value;
         }
 
         private void ProgressEnded(object sender, ApiEventArgs args)
@@ -89,7 +95,6 @@ namespace PoeRankingTracker.Forms
                 timer?.Stop();
 
                 logger.Debug($"Get ladder {configuration.League.Id} - {configuration.AccountName}");
-                // TODO task cancelled exception
                 List<IEntry> entries = await httpClientService.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name).ConfigureAwait(true);
                 var entryRefreshed = characterService.GetEntry(entries, configuration.Entry.Character.Name);
                 if (entryRefreshed != null)
@@ -99,6 +104,10 @@ namespace PoeRankingTracker.Forms
                 }
 
                 timer?.Start();
+            }
+            catch (TaskCanceledException e)
+            {
+                logger.Debug(e, "Task cancelled");
             }
             catch (CharacterNotFoundException e)
             {
@@ -210,6 +219,13 @@ namespace PoeRankingTracker.Forms
                 container.DoubleClick += new HtmlElementEventHandler(TrackerForm_MouseDoubleClick);
                 webBrowser.Size = container.OffsetRectangle.Size;
                 Size = container.OffsetRectangle.Size;
+            }
+
+            var progress = webBrowser.Document.GetElementsByTagName("progress");
+            if (progress != null && progress.Count > 0)
+            {
+                progress[0].SetAttribute("value", $"{currentProgress}");
+                progress[0].SetAttribute("max", $"{maxProgress}");
             }
         }
 

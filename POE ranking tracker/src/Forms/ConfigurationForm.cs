@@ -431,6 +431,7 @@ namespace PoeRankingTracker.Forms
 
                     webBrowser.Document.Write(content);
                     webBrowser.Refresh();
+
                     CheckIfOkButtonCanBeEnabled();
                 }
             }
@@ -503,6 +504,13 @@ namespace PoeRankingTracker.Forms
 
         private void WebBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            var progress = webBrowser.Document.GetElementsByTagName("progress");
+            if (progress != null && progress.Count > 0)
+            {
+                progress[0].SetAttribute("value", "30");
+                progress[0].SetAttribute("max", "100");
+            }
+
             var container = webBrowser.Document.GetElementById("container");
             webBrowser.Visible = container != null;
             if (container != null)
