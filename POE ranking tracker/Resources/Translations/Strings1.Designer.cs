@@ -70,15 +70,6 @@ namespace PoeRankingTracker.Resources.Translations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Background color.
-        /// </summary>
-        public static string BackgroundColor {
-            get {
-                return ResourceManager.GetString("BackgroundColor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot find league.
         /// </summary>
         public static string CannotFindLeague {
@@ -106,16 +97,16 @@ namespace PoeRankingTracker.Resources.Translations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose font.
+        ///   Looks up a localized string similar to Choose a template.
         /// </summary>
-        public static string ChooseFont {
+        public static string ChooseTemplate {
             get {
-                return ResourceManager.GetString("ChooseFont", resourceCulture);
+                return ResourceManager.GetString("ChooseTemplate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Class rank.
+        ///   Looks up a localized string similar to Class.
         /// </summary>
         public static string ClassRank {
             get {
@@ -151,7 +142,7 @@ namespace PoeRankingTracker.Resources.Translations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XP to gain rank.
+        ///   Looks up a localized string similar to Rank {0}.
         /// </summary>
         public static string ExperienceAhead {
             get {
@@ -160,7 +151,7 @@ namespace PoeRankingTracker.Resources.Translations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XP to lose rank.
+        ///   Looks up a localized string similar to Rank {0}.
         /// </summary>
         public static string ExperienceBehind {
             get {
@@ -187,7 +178,7 @@ namespace PoeRankingTracker.Resources.Translations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Global rank.
+        ///   Looks up a localized string similar to Global.
         /// </summary>
         public static string GlobalRank {
             get {
@@ -277,6 +268,15 @@ namespace PoeRankingTracker.Resources.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh templates.
+        /// </summary>
+        public static string RefreshTemplates {
+            get {
+                return ResourceManager.GetString("RefreshTemplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Session Id.
         /// </summary>
         public static string SessionId {
@@ -309,42 +309,6 @@ namespace PoeRankingTracker.Resources.Translations {
         public static string SessionIdMissing {
             get {
                 return ResourceManager.GetString("SessionIdMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show advanced options.
-        /// </summary>
-        public static string ShowAdvancedOptions {
-            get {
-                return ResourceManager.GetString("ShowAdvancedOptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show number of deads/retired ahead.
-        /// </summary>
-        public static string ShowDeadsAhead {
-            get {
-                return ResourceManager.GetString("ShowDeadsAhead", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show missing experience points to gain one rank.
-        /// </summary>
-        public static string ShowExperienceAhead {
-            get {
-                return ResourceManager.GetString("ShowExperienceAhead", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show present experience points to lose one rank.
-        /// </summary>
-        public static string ShowExperienceBehind {
-            get {
-                return ResourceManager.GetString("ShowExperienceBehind", resourceCulture);
             }
         }
         

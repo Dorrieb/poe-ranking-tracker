@@ -1,6 +1,7 @@
 ﻿using PoeApiClient.Events;
 using PoeApiClient.Models;
 using PoeApiClient.Services;
+using PoeRankingTracker.Exceptions;
 using PoeRankingTracker.Models;
 using PoeRankingTracker.Resources.Translations;
 using PoeRankingTracker.Services;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Drawing;
-using System.Globalization;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -22,11 +22,15 @@ namespace PoeRankingTracker.Forms
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private IHttpClientService httpClientService;
         private ICharacterService characterService;
+        private IHtmlService htmlService;
+        private string templateContent;
+        private bool initialLoading = false;
 
-        public TrackerForm(IHttpClientService httpClientService, ICharacterService characterService)
+        public TrackerForm(IHttpClientService httpClientService, ICharacterService characterService, IHtmlService htmlService)
         {
             this.httpClientService = httpClientService;
             this.characterService = characterService;
+            this.htmlService = htmlService;
             InitializeComponent();
             InitializePosition();
             InitializeProgressEvents();
@@ -36,11 +40,6 @@ namespace PoeRankingTracker.Forms
         private void InitializeTranslations()
         {
             Text = Strings.Configuration;
-            globalRankLabel.Text = Strings.GlobalRank;
-            classRankLabel.Text = Strings.ClassRank;
-            deadsAheadLabel.Text = Strings.DeadsAhead;
-            showExperienceAheadLabel.Text = Strings.ExperienceAhead;
-            showExperienceBehindLabel.Text = Strings.ExperienceBehind;
         }
 
         private void InitializePosition()
@@ -61,27 +60,14 @@ namespace PoeRankingTracker.Forms
 
         private void ProgressStarted(object sender, ApiEventArgs args)
         {
-            progressBar.Invoke(new MethodInvoker(delegate
-            {
-                progressBar.Value = 0;
-                progressBar.Maximum = args.Value;
-            }));
         }
 
         private void ProgressIncremented(object sender, ApiEventArgs args)
         {
-            progressBar.Invoke(new MethodInvoker(delegate
-            {
-                progressBar.PerformStep();
-            }));
         }
 
         private void ProgressEnded(object sender, ApiEventArgs args)
         {
-            progressBar.Invoke(new MethodInvoker(delegate
-            {
-                progressBar.Value = 0;
-            }));
         }
 
         public void SetConfiguration(TrackerConfiguration configuration)
@@ -90,154 +76,51 @@ namespace PoeRankingTracker.Forms
 
             this.configuration = configuration;
             InitializeTranslations();
-            SetStyles();
-            SetComponentsVisibility();
-            RetrieveData();
-            rankValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", configuration.Entry.Rank); // Display rank immediately
-        }
-
-        private void SetComponentsVisibility()
-        {
-            classRankValue.Visible = Properties.Settings.Default.ShowRankByClass;
-            classRankLabel.Visible = Properties.Settings.Default.ShowRankByClass;
-            classRankValue.Text = Strings.PleaseWait;
-
-            deadsAheadValue.Visible = Properties.Settings.Default.ShowDeadsAhead;
-            deadsAheadLabel.Visible = Properties.Settings.Default.ShowDeadsAhead;
-            deadsAheadValue.Text = Strings.PleaseWait;
-
-            showExperienceAheadValue.Visible = Properties.Settings.Default.ShowExperienceAhead;
-            showExperienceAheadLabel.Visible = Properties.Settings.Default.ShowExperienceAhead;
-            showExperienceAheadValue.Text = Strings.PleaseWait;
-
-            showExperienceBehindValue.Visible = Properties.Settings.Default.ShowExperienceBehind;
-            showExperienceBehindLabel.Visible = Properties.Settings.Default.ShowExperienceBehind;
-            showExperienceBehindValue.Text = Strings.PleaseWait;
-
-            progressBar.Visible = Properties.Settings.Default.ShowProgressBar;
-        }
-
-        private void SetStyles()
-        {
-            Font = configuration.Font;
-            ForeColor = configuration.FontColor;
-            BackColor = configuration.BackgroundColor;
-            progressBar.SetColor(configuration.FontColor);
+            templateContent = htmlService.GetTemplate(configuration.Template);
+            initialLoading = true;
+            webBrowser.Navigate(new Uri("about:blank"));
         }
 
         private async void RetrieveData()
         {
-            logger.Debug("RetrieveData");
-            timer?.Stop();
-
-            ILadder ladder = await httpClientService.GetLadderAsync(configuration.League.Id, configuration.AccountName).ConfigureAwait(true);
-            int rank = characterService.GetRank(ladder, configuration.Entry.Character.Name);
-            List<IEntry> entries = await httpClientService.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name, rank).ConfigureAwait(true); // TODO task cancelled exception
-            var entryRefreshed = characterService.GetEntry(entries, configuration.Entry.Character.Name);
-            if (entryRefreshed != null)
+            try
             {
-                configuration.Entry = entryRefreshed;
-                ComputeRank(entries);
-                ComputeRankByClass(entries);
-                ComputeNumberOfDeadsAhead(entries);
-                ComputeExperienceAhead(entries);
-                ComputeExperienceBehind(entries);
+                logger.Debug("RetrieveData");
+                timer?.Stop();
+
+                logger.Debug($"Get ladder {configuration.League.Id} - {configuration.AccountName}");
+                // TODO task cancelled exception
+                List<IEntry> entries = await httpClientService.GetEntries(configuration.League.Id, configuration.AccountName, configuration.Entry.Character.Name).ConfigureAwait(true);
+                var entryRefreshed = characterService.GetEntry(entries, configuration.Entry.Character.Name);
+                if (entryRefreshed != null)
+                {
+                    configuration.Entry = entryRefreshed;
+                    RefreshDisplay(entries);
+                }
+
+                timer?.Start();
             }
-
-            timer?.Start();
-        }
-
-        private void ComputeRank(List<IEntry> entries)
-        {
-            DisplayRank(characterService.GetRank(entries, Properties.Settings.Default.CharacterName));
-        }
-
-        private void DisplayRank(int rank)
-        {
-            rankValue.Invoke(new MethodInvoker(delegate
+            catch (CharacterNotFoundException e)
             {
-                rankValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", rank);
+                logger.Debug(e, "Character not found");
+            }
+            catch (ObjectDisposedException e)
+            {
+                logger.Debug(e, "Object disposed after tasks cancel");
+            }
+        }
+
+        private void RefreshDisplay(List<IEntry> entries)
+        {
+            webBrowser.Invoke(new MethodInvoker(delegate
+            {
+                var htmlConfiguration = htmlService.BuildHtmlConfiguration(entries, configuration.Entry);
+                var content = templateContent.Clone() as string;
+                content = htmlService.UpdateContent(content, htmlConfiguration);
+                webBrowser.Document.OpenNew(true);
+                webBrowser.Document.Write(content);
+                webBrowser.Refresh();
             }));
-        }
-
-        private void ComputeRankByClass(List<IEntry> entries)
-        {
-            if (Properties.Settings.Default.ShowRankByClass)
-            {
-                var rank = characterService.GetRankByClass(entries, configuration.Entry);
-                DisplayRankByClass(rank);
-            }
-        }
-
-        private void DisplayRankByClass(int rank)
-        {
-            if (Properties.Settings.Default.ShowRankByClass)
-            {
-                classRankValue.Invoke(new MethodInvoker(delegate
-                {
-                    classRankValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", rank);
-                }));
-            }
-        }
-
-        private void ComputeNumberOfDeadsAhead(List<IEntry> entries)
-        {
-            if (Properties.Settings.Default.ShowDeadsAhead)
-            {
-                var n = characterService.GetNumbersOfDeadsAhead(entries, configuration.Entry);
-                DisplayNumberOfDeadsAhead(n);
-            }
-        }
-
-        private void DisplayNumberOfDeadsAhead(int n)
-        {
-            if (Properties.Settings.Default.ShowDeadsAhead)
-            {
-                deadsAheadValue.Invoke(new MethodInvoker(delegate
-                {
-                    deadsAheadValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", n);
-                }));
-            }
-        }
-
-        private void ComputeExperienceAhead(List<IEntry> entries)
-        {
-            if (Properties.Settings.Default.ShowExperienceAhead)
-            {
-                long n = characterService.GetExperienceAhead(entries, configuration.Entry);
-                DisplayExperienceAhead(n);
-            }
-        }
-
-        private void DisplayExperienceAhead(long n)
-        {
-            if (Properties.Settings.Default.ShowExperienceAhead)
-            {
-                showExperienceAheadValue.Invoke(new MethodInvoker(delegate
-                {
-                    showExperienceAheadValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", n);
-                }));
-            }
-        }
-
-        private void ComputeExperienceBehind(List<IEntry> entries)
-        {
-            if (Properties.Settings.Default.ShowExperienceBehind)
-            {
-                long n = characterService.GetExperienceBehind(entries, configuration.Entry);
-                DisplayExperienceBehind(n);
-            }
-        }
-
-        private void DisplayExperienceBehind(long n)
-        {
-            if (Properties.Settings.Default.ShowExperienceBehind)
-            {
-                showExperienceBehindValue.Invoke(new MethodInvoker(delegate
-                {
-                    showExperienceBehindValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", n);
-                }));
-            }
         }
 
         private void SetTimer()
@@ -251,18 +134,18 @@ namespace PoeRankingTracker.Forms
             RetrieveData();
         }
 
-        private void TrackerForm_MouseMove(object sender, MouseEventArgs e)
+        private void TrackerForm_MouseMove(object sender, HtmlElementEventArgs  e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.MouseButtonsPressed == MouseButtons.Left)
             {
-                Left += e.X - lastPoint.X;
-                Top += e.Y - lastPoint.Y;
+                Left += e.MousePosition.X - lastPoint.X;
+                Top += e.MousePosition.Y - lastPoint.Y;
             }
         }
 
-        private void TrackerForm_MouseDown(object sender, MouseEventArgs e)
+        private void TrackerForm_MouseDown(object sender, HtmlElementEventArgs e)
         {
-            lastPoint = new Point(e.X, e.Y);
+            lastPoint = new Point(e.MousePosition.X, e.MousePosition.Y);
         }
 
         private void TrackerForm_MouseDoubleClick(object sender, System.EventArgs e)
@@ -282,17 +165,15 @@ namespace PoeRankingTracker.Forms
             Application.Exit();
         }
 
-        private void TrackerForm_Move(object sender, System.EventArgs e)
-        {
-            Properties.Settings.Default.TrackerMoved = true;
-        }
-
         private void TrackerForm_VisibleChanged(object sender, EventArgs e)
         {
             if (!Visible)
             {
                 timer.Stop();
                 httpClientService.CancelPendingRequests();
+                initialLoading = true;
+                webBrowser.Document.MouseDown -= new HtmlElementEventHandler(TrackerForm_MouseDown);
+                webBrowser.Document.MouseMove -= new HtmlElementEventHandler(TrackerForm_MouseMove);
             }
         }
 
@@ -301,11 +182,43 @@ namespace PoeRankingTracker.Forms
             if (disposing)
             {
                 components?.Dispose();
-
+                webBrowser.Dispose();
                 timer.Dispose();
             }
 
             base.Dispose(disposing);
+        }
+
+        private void WebBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            if (initialLoading)
+            {
+                initialLoading = false;
+                webBrowser.Document.OpenNew(true);
+                var htmlConfiguration = htmlService.BuildHtmlConfiguration(null, configuration.Entry);
+                var content = htmlService.UpdateContent(templateContent, htmlConfiguration);
+                webBrowser.Document.Write(content);
+                webBrowser.Document.MouseDown += new HtmlElementEventHandler(TrackerForm_MouseDown);
+                webBrowser.Document.MouseMove += new HtmlElementEventHandler(TrackerForm_MouseMove);
+                webBrowser.Refresh();
+                RetrieveData();
+            }
+
+            var container = webBrowser.Document.GetElementById("container");
+            if (container != null)
+            {
+                container.DoubleClick += new HtmlElementEventHandler(TrackerForm_MouseDoubleClick);
+                webBrowser.Size = container.OffsetRectangle.Size;
+                Size = container.OffsetRectangle.Size;
+            }
+        }
+
+        private void WebBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.Alt && e.KeyCode == Keys.F4)
+            {
+                Close();
+            }
         }
     }
 }

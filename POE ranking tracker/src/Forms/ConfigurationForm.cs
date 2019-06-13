@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,20 +23,25 @@ namespace PoeRankingTracker.Forms
         private IHttpClientService httpClientService;
         private ISemaphoreService semaphoreService;
         private IFormService formService;
+        private IFormatterService formatterService;
+        private IHtmlService htmlService;
 
-        public ConfigurationForm(IFormService formService, IHttpClientService httpClientService, ISemaphoreService semaphoreService)
+        public ConfigurationForm(IFormService formService, IHttpClientService httpClientService, ISemaphoreService semaphoreService, IFormatterService formatterService, IHtmlService htmlService)
         {
             this.formService = formService;
             this.httpClientService = httpClientService;
             this.semaphoreService = semaphoreService;
+            this.formatterService = formatterService;
+            this.htmlService = htmlService;
             InitializeComponent();
             InitializeTranslations();
             InitializePosition();
             InitializeFontAndOptions();
             InitializeLanguagesCombo();
             InitializeLeagueRaceCombo();
+            InitializeTemplates();
         }
-        
+
         private void InitializeTranslations()
         {
             if (Properties.Settings.Default.Language.Length > 0)
@@ -48,25 +54,11 @@ namespace PoeRankingTracker.Forms
             accountNameLabel.Text = Strings.AccountName;
             characterNameLabel.Text = Strings.CharacterName;
             sessionIdLabel.Text = Strings.SessionId;
-            showRankByClassCheckbox.Text = Strings.ShowRankByClass;
-            showDeadsAheadCheckBox.Text = Strings.ShowDeadsAhead;
-            showExperienceAheadCheckBox.Text = Strings.ShowExperienceAhead;
-            showExperienceBehindCheckBox.Text = Strings.ShowExperienceBehind;
-            showProgressBarCheckBox.Text = Strings.ShowProgressBar;
-            fontButton.Text = Strings.ChooseFont;
-            backgroundColor.Text = Strings.BackgroundColor;
+            templatesComboBox.Text = Strings.ChooseTemplate;
             sampleLabel.Text = Strings.PreviewLabel;
-            globalRankValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", 27);
-            classRankValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", 2);
-            showExperienceAheadValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", 527983);
-            showExperienceBehindValue.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,0}", 199532);
-            globalRankLabel.Text = Strings.GlobalRank;
-            classRankLabel.Text = Strings.ClassRank;
-            deadsAheadlabel.Text = Strings.DeadsAhead;
-            showExperienceAheadLabel.Text = Strings.ExperienceAhead;
-            showExperienceBehindLabel.Text = Strings.ExperienceBehind;
             okButton.Text = Strings.OK;
             languageLabel.Text = Strings.Language;
+            refreshTemplatesButtonToolTip.SetToolTip(refreshTemplatesButton, Strings.RefreshTemplates);
         }
 
         private void InitializePosition()
@@ -109,18 +101,6 @@ namespace PoeRankingTracker.Forms
 
         private async void InitializeFontAndOptions()
         {
-            fontDialog.Font = Properties.Settings.Default.Font;
-            fontDialog.Color = Properties.Settings.Default.FontColor;
-            classRankLabel.Visible = Properties.Settings.Default.ShowRankByClass;
-            classRankValue.Visible = Properties.Settings.Default.ShowRankByClass;
-            deadsAheadlabel.Visible = Properties.Settings.Default.ShowDeadsAhead;
-            deadsAheadValue.Visible = Properties.Settings.Default.ShowDeadsAhead;
-            showExperienceAheadLabel.Visible = Properties.Settings.Default.ShowExperienceAhead;
-            showExperienceAheadValue.Visible = Properties.Settings.Default.ShowExperienceAhead;
-            showExperienceBehindLabel.Visible = Properties.Settings.Default.ShowExperienceBehind;
-            showExperienceBehindValue.Visible = Properties.Settings.Default.ShowExperienceBehind;
-            progressBar.Visible = Properties.Settings.Default.ShowProgressBar;
-            progressBar.SetColor(Properties.Settings.Default.FontColor);
             infoKeyProvider.Icon = Icon.FromHandle(Properties.Resources.Key_16x.GetHicon());
             warningKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyWarning_16x.GetHicon());
             errorKeyProvider.Icon = Icon.FromHandle(Properties.Resources.KeyError_16x.GetHicon());
@@ -128,17 +108,15 @@ namespace PoeRankingTracker.Forms
             okProvider.Icon = Icon.FromHandle(Properties.Resources.StatusOK_16x.GetHicon());
             await httpClientService.SetSessionId(Properties.Settings.Default.SessionId).ConfigureAwait(true);
             CheckSessionId();
-            CenterPanel();
         }
 
         private async void InitializeLeagueRaceCombo()
         {
             try
             {
+                logger.Debug("Get leagues");
                 List<ILeague> leagues = await httpClientService.GetLeaguesAsync().ConfigureAwait(true);
                 CheckSessionId();
-
-                semaphoreService.CreateSemaphore();
 
                 errorProvider.SetError(leagueRaceCombo, "");
                 leagueRaceCombo.Items.Clear();
@@ -161,6 +139,25 @@ namespace PoeRankingTracker.Forms
             }
         }
 
+        private void InitializeTemplates()
+        {
+            templatesComboBox.Items.Clear();
+
+            foreach (string file in Directory.EnumerateFiles(Properties.Settings.Default.TemplatesPath, "*.html"))
+            {
+                var item = new ComboBoxItem()
+                {
+                    Text = file.Substring(Properties.Settings.Default.TemplatesPath.Length + 1),
+                    Value = file,
+                };
+                templatesComboBox.Items.Add(item);
+                if (Properties.Settings.Default.Template == file)
+                {
+                    templatesComboBox.SelectedItem = item;
+                }
+            }
+        }
+
         private async void SetSelectedLeague()
         {
             selectedLeague = null;
@@ -179,6 +176,7 @@ namespace PoeRankingTracker.Forms
 
             if (selectedLeague == null && Properties.Settings.Default.LeagueId.Length > 0)
             {
+                logger.Debug($"Get league {Properties.Settings.Default.LeagueId}");
                 var league = await httpClientService.GetLeagueAsync(Properties.Settings.Default.LeagueId).ConfigureAwait(true);
                 if (league != null)
                 {
@@ -198,15 +196,6 @@ namespace PoeRankingTracker.Forms
 
             DisplayLeagueInfo();
             InitializeCharactersList();
-        }
-
-        private void BackgroundColorButton_Click(object sender, EventArgs e)
-        {
-            if (backgroundColorDialog.ShowDialog() == DialogResult.OK)
-            {
-                backgroundColorButton.BackColor = backgroundColorDialog.Color;
-                Properties.Settings.Default.BackgroundColor = backgroundColorDialog.Color;
-            }
         }
 
         private void LeagueRaceCombo_SelectedIndexChanged(object sender, EventArgs e)
@@ -232,7 +221,8 @@ namespace PoeRankingTracker.Forms
             if (startLength == cb.Text.Length)
             {
                 var leagueId = cb.Text;
-                                var league = await httpClientService.GetLeagueAsync(leagueId).ConfigureAwait(true);
+                logger.Debug($"Get league {leagueId}");
+                var league = await httpClientService.GetLeagueAsync(leagueId).ConfigureAwait(true);
                 if (league == null)
                 {
                     errorProvider.SetError(leagueRaceCombo, Strings.FailedToRetrieveLeague);
@@ -254,7 +244,7 @@ namespace PoeRankingTracker.Forms
 
         private void CheckIfOkButtonCanBeEnabled()
         {
-            okButton.Enabled = selectedEntry != null;
+            okButton.Enabled = selectedEntry != null && Properties.Settings.Default.CharacterName.Length > 0 && Properties.Settings.Default.Template.Length > 0;
         }
 
         private void OkButton_Click(object sender, EventArgs e)
@@ -267,15 +257,9 @@ namespace PoeRankingTracker.Forms
             {
                 League = selectedLeague,
                 Entry = selectedEntry,
-                Font = fontDialog.Font,
-                FontColor = fontDialog.Color,
-                BackgroundColor = backgroundColorButton.BackColor,
-                ShowDeadsAhead = showDeadsAheadCheckBox.Checked,
-                ShowExperienceAhead = showExperienceAheadCheckBox.Checked,
-                ShowExperienceBehind = showExperienceBehindCheckBox.Checked,
-                ShowProgressBar = showProgressBarCheckBox.Checked,
                 AccountName = accountNameTextBox.Text,
                 Culture = CultureInfo.CurrentCulture,
+                Template = Properties.Settings.Default.Template,
             };
 
             RankingTrackerContext.CurrentContext.ShowTrackerForm(configuration);
@@ -302,6 +286,7 @@ namespace PoeRankingTracker.Forms
             charactersComboBox.Items.Clear();
             if (selectedLeague != null && accountName != null && accountName.Length > 0)
             {
+                logger.Debug($"Get ladder {selectedLeague.Id} - {accountName}");
                 ILadder ladder = await httpClientService.GetLadderAsync(selectedLeague.Id, accountName).ConfigureAwait(true);
                 try
                 {
@@ -315,15 +300,18 @@ namespace PoeRankingTracker.Forms
                     {
                         foreach (Entry entry in ladder.Entries)
                         {
-                            var item = new ComboBoxItem
+                            if (!entry.Dead && !entry.Retired)
                             {
-                                Text = $"{entry.Character.Name} ({entry.Character.Level})",
-                                Value = entry,
-                            };
-                            charactersComboBox.Items.Add(item);
-                            if (entry.Character.Name == Properties.Settings.Default.CharacterName)
-                            {
-                                charactersComboBox.SelectedItem = item;
+                                var item = new ComboBoxItem
+                                {
+                                    Text = $"{entry.Character.Name} ({entry.Character.Level})",
+                                    Value = entry,
+                                };
+                                charactersComboBox.Items.Add(item);
+                                if (entry.Character.Name == Properties.Settings.Default.CharacterName)
+                                {
+                                    charactersComboBox.SelectedItem = item;
+                                }
                             }
                         }
                         SetAccountNameError();
@@ -364,6 +352,16 @@ namespace PoeRankingTracker.Forms
             CheckIfOkButtonCanBeEnabled();
         }
 
+        private void TemplatesComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var combo = sender as ComboBox;
+            var item = combo.SelectedItem as ComboBoxItem;
+            
+            Properties.Settings.Default.Template = item.Value as string;
+
+            LoadTemplate();
+        }
+
         private void ConfigurationForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.ConfigurationLocation = Location;
@@ -393,50 +391,6 @@ namespace PoeRankingTracker.Forms
             Properties.Settings.Default.ConfigurationMoved = true;
         }
 
-        private void ShowRankByClassCheckbox_CheckedChanged(object sender, EventArgs e)
-        {
-            var b = (sender as CheckBox).Checked;
-            Properties.Settings.Default.ShowRankByClass = b;
-            classRankLabel.Visible = b;
-            classRankValue.Visible = b;
-            CenterPanel();
-        }
-
-        private void ShowDeadsAheadCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            var b = (sender as CheckBox).Checked;
-            Properties.Settings.Default.ShowDeadsAhead = b;
-            deadsAheadlabel.Visible = b;
-            deadsAheadValue.Visible = b;
-            CenterPanel();
-        }
-
-        private void ShowExperienceAheadCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            var b = (sender as CheckBox).Checked;
-            Properties.Settings.Default.ShowExperienceAhead = b;
-            showExperienceAheadLabel.Visible = b;
-            showExperienceAheadValue.Visible = b;
-            CenterPanel();
-        }
-
-        private void ShowExperienceBehindCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            var b = (sender as CheckBox).Checked;
-            Properties.Settings.Default.ShowExperienceBehind = b;
-            showExperienceBehindLabel.Visible = b;
-            showExperienceBehindValue.Visible = b;
-            CenterPanel();
-        }
-
-        private void ShowProgressBarCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            var b = (sender as CheckBox).Checked;
-            Properties.Settings.Default.ShowProgressBar = b;
-            progressBar.Visible = b;
-            CenterPanel();
-        }
-
         private async void SessionIdTextBox_TextChanged(object sender, EventArgs e)
         {
             TextBox tb = (TextBox)sender;
@@ -456,25 +410,36 @@ namespace PoeRankingTracker.Forms
             Application.Exit();
         }
 
-        private void FontButton_Click(object sender, EventArgs e)
+        private void LoadTemplate()
         {
-            fontDialog.Font = Properties.Settings.Default.Font;
-
-            if (fontDialog.ShowDialog() != DialogResult.Cancel)
+            try
             {
-                tableLayoutPanel.Font = fontDialog.Font;
-                tableLayoutPanel.ForeColor = fontDialog.Color;
-                progressBar.SetColor(fontDialog.Color);
-                Properties.Settings.Default.Font = fontDialog.Font;
-                Properties.Settings.Default.FontColor = fontDialog.Color;
-                CenterPanel();
+                if (Properties.Settings.Default.Template != null)
+                {
+                    var configuration = new HtmlConfiguration()
+                    {
+                        CharacterClass = CharacterClass.Trickster,
+                        DeadsAhead = 7,
+                        ExperienceAhead = 45527983,
+                        ExperienceBehind = 199532,
+                        Level = 85,
+                        Rank = 27,
+                        RankByClass = 6,
+                    };
+                    var content = htmlService.GetTemplate(Properties.Settings.Default.Template);
+                    content = htmlService.UpdateContent(content, configuration);
+
+                    webBrowser.Document.Write(content);
+                    webBrowser.Refresh();
+                    CheckIfOkButtonCanBeEnabled();
+                }
             }
-        }
-        private void CenterPanel()
-        {
-            tableLayoutPanel.Location = new Point(
-                this.samplePanel.Width / 2 - tableLayoutPanel.Size.Width / 2,
-                this.samplePanel.Height / 2 - tableLayoutPanel.Size.Height / 2);
+            catch (IOException e)
+            {
+                logger.Error(e, "Failed to load template");
+                Properties.Settings.Default.Template = null;
+                InitializeTemplates();
+            }
         }
 
         private void LanguageComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -487,9 +452,9 @@ namespace PoeRankingTracker.Forms
             InitializeTranslations();
             InitializeLanguagesCombo();
             DisplayLeagueInfo();
-                        SetAccountNameError();
+            SetAccountNameError();
             CheckSessionId();
-            CenterPanel();
+            LoadTemplate();
         }
 
         private void CheckSessionId()
@@ -536,16 +501,23 @@ namespace PoeRankingTracker.Forms
             }
         }
 
-        private void ResetFontButton_Click(object sender, EventArgs e)
+        private void WebBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            Font font = new Font("Microsoft Sans Serif", 8);
-            Color color = Color.Black;
+            var container = webBrowser.Document.GetElementById("container");
+            webBrowser.Visible = container != null;
+            if (container != null)
+            {
+                webBrowser.Size = container.OffsetRectangle.Size;
+                webBrowser.Location = new Point(
+                    samplePanel.Width / 2 - webBrowser.Size.Width / 2,
+                    samplePanel.Height / 2 - webBrowser.Size.Height / 2);
+            }
+        }
 
-            fontDialog.Font = font;
-            fontDialog.Color = color;
-            Properties.Settings.Default.Font = font;
-            Properties.Settings.Default.FontColor = color;
-            progressBar.SetColor(color);
+        private void RefreshTemplatesButton_Click(object sender, EventArgs e)
+        {
+            InitializeTemplates();
+            LoadTemplate();
         }
     }
 }

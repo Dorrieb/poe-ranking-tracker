@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using PoeRankingTracker.Models;
-using System.Drawing;
-using System.Text;
-using System.Globalization;
 using PoeApiClient.Models;
+using PoeRankingTracker.Models;
 using POEToolsTestsBase;
 using System;
+using System.Drawing;
+using System.Globalization;
+using System.Text;
 
 namespace PoeRankingTrackerTests.Models
 {
@@ -30,13 +30,6 @@ namespace PoeRankingTrackerTests.Models
             {
                 League = league,
                 Entry = league.Ladder.Entries[0],
-                Font = font,
-                FontColor = fontColor,
-                BackgroundColor = backgroundColor,
-                ShowDeadsAhead = true,
-                ShowExperienceAhead = true,
-                ShowExperienceBehind = true,
-                ShowProgressBar = true,
                 AccountName = accountName,
                 Culture = CultureInfo.CurrentCulture,
             };

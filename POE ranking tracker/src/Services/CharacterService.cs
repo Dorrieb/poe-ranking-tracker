@@ -1,4 +1,5 @@
 ﻿using PoeApiClient.Models;
+using PoeRankingTracker.Exceptions;
 using PoeRankingTracker.Models;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,6 @@ namespace PoeRankingTracker.Services
         int GetRankByClass(List<IEntry> entries, IEntry entry);
         int GetNumbersOfDeadsAhead(List<IEntry> entries, IEntry entry);
         bool IsEntryInvalid(IEntry entry);
-        long GetExperienceDifference(IEntry entry1, IEntry entry2);
-        int GetRank(List<IEntry> entries, string characterName);
         long GetExperienceAhead(List<IEntry> entries, IEntry entry);
         long GetExperienceBehind(List<IEntry> entries, IEntry entry);
         IEntry GetEntry(List<IEntry> entries, string characterName);
@@ -21,25 +20,20 @@ namespace PoeRankingTracker.Services
 
     public class CharacterService : ICharacterService
     {
-        public const int defaultRank = 15000;
 
         public int GetRank(ILadder ladder, string characterName)
         {
-            var rank = defaultRank;
+            Contract.Requires(ladder != null && characterName != null);
 
-            if (ladder != null)
+            foreach (var entry in ladder.Entries)
             {
-                foreach (var entry in ladder.Entries)
+                if (characterName == entry.Character.Name)
                 {
-                    if (characterName == entry.Character.Name)
-                    {
-                        rank = entry.Rank;
-                        break;
-                    }
+                    return entry.Rank;
                 }
             }
 
-            return rank;
+            throw new CharacterNotFoundException();
         }
 
         public int GetRankByClass(List<IEntry> entries, IEntry entry)
@@ -83,52 +77,30 @@ namespace PoeRankingTracker.Services
             return entry.Dead || entry.Retired;
         }
 
-        public long GetExperienceDifference(IEntry entry1, IEntry entry2)
-        {
-            Contract.Requires(entry1 != null && entry2 != null);
-
-            return entry1.Character.Experience - entry2.Character.Experience;
-        }
-
-        public int GetRank(List<IEntry> entries, string characterName)
-        {
-            Contract.Requires(entries != null);
-
-            var rank = defaultRank;
-
-            var match = entries.Find(e => e.Character.Name == characterName);
-            if (match != null)
-            {
-                rank = match.Rank;
-            }
-
-            return rank;
-        }
-
         public long GetExperienceAhead(List<IEntry> entries, IEntry entry)
         {
-            Contract.Requires(entries != null);
+            Contract.Requires(entries != null && entry != null);
 
             long n = 0;
             int i = entries.IndexOf(entry);
             var data = entries.ToArray();
             if (i > 0)
             {
-                n = GetExperienceDifference(data[i - 1], entry);
+                n = data[i - 1].Character.Experience - entry.Character.Experience;
             }
             return n;
         }
 
         public long GetExperienceBehind(List<IEntry> entries, IEntry entry)
         {
-            Contract.Requires(entries != null);
+            Contract.Requires(entries != null && entry != null);
 
             long n = 0;
             int i = entries.IndexOf(entry);
             var data = entries.ToArray();
             if (i > 0 && i < data.Length - 1)
             {
-                n = GetExperienceDifference(entry, data[i + 1]);
+                n = entry.Character.Experience - data[i + 1].Character.Experience;
             }
             return n;
         }

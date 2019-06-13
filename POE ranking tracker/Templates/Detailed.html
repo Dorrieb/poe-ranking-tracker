@@ -1,0 +1,77 @@
+﻿<html>
+    <head>
+        <style>
+            body {
+                font-family: Arial;
+                margin: 0;
+            }
+            #container {
+                background-color: #393939;
+                padding: 5px;
+                display: inline-block;
+                width: 125px;
+            }
+            table {
+            }
+            table th {
+                color: yellowgreen;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            table td {
+                text-align: center;
+            }
+            .label {
+                color: white;
+                font-size: 10px;
+            }
+            .value {
+                font-size: 10px;
+                font-weight: bold;
+                color: yellowgreen;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="3">{class} ({level})</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="label">{rankLabel}</span>
+                            <br />
+                            <span class="value">{rank}</span>
+                        </td>
+                        <td>
+                            <span class="label">{rankByClassLabel}</span>
+                            <br />
+                            <span class="value">{rankByClass}</span>
+                        </td>
+                        <td>
+                            <span class="label">&uarr;</span>
+                            <br />
+                            <span class="value">{experienceAhead}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span class="label">{deadsAheadLabel}</span>
+                            <br />
+                            <span class="value">{deadsAhead}</span>
+                        </td>
+                        <td>
+                            <span class="label">&darr;</span>
+                            <br />
+                            <span class="value">{experienceBehind}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

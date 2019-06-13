@@ -121,10 +121,6 @@
     <value>Compte</value>
     <comment>Account name label</comment>
   </data>
-  <data name="BackgroundColor" xml:space="preserve">
-    <value>Couleur de fond</value>
-    <comment>Background color label</comment>
-  </data>
   <data name="CannotFindLeague" xml:space="preserve">
     <value>Impossible de récupérer la ligue</value>
     <comment>Cannot find league</comment>
@@ -137,12 +133,12 @@
     <value>Personnages trouvés pour le compte {0}</value>
     <comment>Characters found error</comment>
   </data>
-  <data name="ChooseFont" xml:space="preserve">
-    <value>Choisir la fonte</value>
-    <comment>Choose font button label</comment>
+  <data name="ChooseTemplate" xml:space="preserve">
+    <value>Choisir un gabarit</value>
+    <comment>Choose template label</comment>
   </data>
   <data name="ClassRank" xml:space="preserve">
-    <value>Rang de classe</value>
+    <value>Class</value>
     <comment>Class rank label (preview and tracker)</comment>
   </data>
   <data name="Configuration" xml:space="preserve">
@@ -158,11 +154,11 @@
     <comment>End date label</comment>
   </data>
   <data name="ExperienceAhead" xml:space="preserve">
-    <value>XP pour gagner un rang</value>
+    <value>Rang {0}</value>
     <comment>Experience to gain rank label (preview and tracker)</comment>
   </data>
   <data name="ExperienceBehind" xml:space="preserve">
-    <value>XP pour perdre un rang</value>
+    <value>Rang {0}</value>
     <comment>Experience to lose rank label (preview and tracker)</comment>
   </data>
   <data name="FailedToRetrieveLeague" xml:space="preserve">
@@ -174,7 +170,7 @@
     <comment>Leagues retrieval error</comment>
   </data>
   <data name="GlobalRank" xml:space="preserve">
-    <value>Rang global</value>
+    <value>Global</value>
     <comment>Global rank label (preview and tracker)</comment>
   </data>
   <data name="HideAdvancedOptions" xml:space="preserve">
@@ -212,6 +208,10 @@
   <data name="PreviewLabel" xml:space="preserve">
     <value>Aperçu (valeurs factices)</value>
     <comment>Preview label</comment>
+  </data>
+  <data name="RefreshTemplates" xml:space="preserve">
+    <value>Recharger les gabarits</value>
+    <comment>Refresh templates tooltip</comment>
   </data>
   <data name="SessionId" xml:space="preserve">
     <value>Id de session</value>

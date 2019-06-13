@@ -18,6 +18,8 @@ namespace PoeApiClient.Services
         private SemaphoreSlim semaphore;
         private int semaphoreNumber;
         private readonly IHttpClientService httpClientService;
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private CancellationToken token;
 
         public SemaphoreService(IHttpClientService httpClientService)
         {
@@ -33,44 +35,38 @@ namespace PoeApiClient.Services
 
         public void CreateSemaphore()
         {
-            int currentRequestLimit = httpClientService.GetCurrentRequestLimit();
             int maxRequestLimit = httpClientService.GetMaxRequestLimit();
-            int interval = httpClientService.GetInterval();
+            int interval = httpClientService.GetMinInterval();
 
             if (semaphore != null)
             {
                 logger.Debug("Destroy semaphore");
                 semaphore.Dispose();
+                timer.Dispose();
             }
+            tokenSource = new CancellationTokenSource();
+            token = tokenSource.Token;
             semaphoreNumber = maxRequestLimit;
-            int initialCount = maxRequestLimit - currentRequestLimit;
-            logger.Debug($"Create semaphore with initial = {initialCount} and max = {semaphoreNumber}");
-            semaphore = new SemaphoreSlim(initialCount, semaphoreNumber);
+            logger.Debug($"Create semaphore with max = {semaphoreNumber}");
+            semaphore = new SemaphoreSlim(0, semaphoreNumber);
             InitializeTimer(interval);
         }
 
         private void CancelTasks()
         {
             logger.Debug("Cancel tasks");
-            timer.Stop();
-            if (semaphore != null)
-            {
-                semaphore.Dispose();
-                semaphore = null;
-            }
+            timer?.Stop();
+            tokenSource.Cancel();
         }
 
         private void InitializeTimer(int interval)
         {
-            if (timer == null)
-            {
-                OnTimer(null, null);
-                timer = new System.Timers.Timer();
-                timer.Elapsed += OnTimer;
-                timer.AutoReset = true;
-                timer.Interval = interval * 1000;
-                timer.Enabled = true;
-            }
+            logger.Debug($"Initialize timer (interval = {interval}s)");
+            timer = new System.Timers.Timer();
+            timer.Elapsed += OnTimer;
+            timer.AutoReset = true;
+            timer.Interval = interval * 1000;
+            timer.Enabled = true;
         }
 
         private void OnTimer(Object source, ElapsedEventArgs e)
@@ -93,22 +89,11 @@ namespace PoeApiClient.Services
         {
             if (semaphore != null)
             {
-                int requestLimit = httpClientService.GetCurrentRequestLimit();
-                int i = semaphoreNumber - semaphore.CurrentCount - requestLimit;
+                int i = semaphoreNumber - semaphore.CurrentCount;
                 if (i > 0)
                 {
                     logger.Debug($"Release {i} semaphores");
                     semaphore.Release(i);
-                }
-                else if (semaphore.CurrentCount == 0)
-                {
-                    int timeout = httpClientService.GetTimeout();
-                    if (timeout > 0)
-                    {
-                        Thread.Sleep(timeout * 1000);
-                    }
-                    logger.Debug("Release all semaphores");
-                    semaphore.Release(semaphoreNumber);
                 }
             }
         }
@@ -116,7 +101,7 @@ namespace PoeApiClient.Services
         private void OnProcessGetRequestStarted(object sender, HttpRequestEventArgs args)
         {
             logger.Debug($"Wait for semaphore - start ({semaphore?.CurrentCount})");
-            semaphore?.Wait();
+            semaphore?.WaitAsync(token);
             logger.Debug($"Wait for semaphore - end ({semaphore?.CurrentCount})");
         }
 
@@ -145,6 +130,7 @@ namespace PoeApiClient.Services
             {
                 timer?.Dispose();
                 semaphore?.Dispose();
+                tokenSource.Dispose();
             }
         }
 

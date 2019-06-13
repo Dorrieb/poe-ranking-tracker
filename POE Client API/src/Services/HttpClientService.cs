@@ -29,10 +29,11 @@ namespace PoeApiClient.Services
         Task<ILeague> GetLeagueAsync(string leagueId);
         Task<ILadder> GetLadderAsync(string leagueId, string accountName);
         Task<ILadder> GetLadderAsync(string leagueId, int offset, int limit);
-        Task<List<IEntry>> GetEntries(string leagueId, string accountName, string characterName, int rank);
+        Task<List<IEntry>> GetEntries(string leagueId, string accountName, string characterName);
         int GetMaxRequestLimit();
         int GetCurrentRequestLimit();
-        int GetInterval();
+        int GetMinInterval();
+        int GetMaxInterval();
         int GetTimeout();
 
         event EventHandler<ApiEventArgs> GetEntriesStarted;
@@ -140,22 +141,36 @@ namespace PoeApiClient.Services
         public void CancelPendingRequests()
         {
             OnCancelRequested();
+            tokenSource.Cancel();
             client.CancelPendingRequests();
         }
 
-        public async Task<List<IEntry>> GetEntries(string leagueId, string accountName, string characterName, int rank)
+        public async Task<List<IEntry>> GetEntries(string leagueId, string accountName, string characterName)
         {
-            logger.Debug("GetEntries");
             List<IEntry> entries = new List<IEntry>();
-            ILadder ladder = await GetLadderAsync(leagueId, accountName).ConfigureAwait(true);
-            int limit = 200;
-            int offset = -1;
-            int tasksNumber = (int)Math.Ceiling((double)rank / limit);
-            OnGetEntriesStarted(tasksNumber);
-            ConcurrentBag<List<IEntry>> bag = new ConcurrentBag<List<IEntry>>();
 
             try
             {
+                logger.Debug("GetEntries");
+                ILadder ladder = await GetLadderAsync(leagueId, accountName).ConfigureAwait(true);
+                int rank = 0;
+                if (ladder != null)
+                {
+                    foreach (var entry in ladder.Entries)
+                    {
+                        if (characterName == entry.Character.Name)
+                        {
+                            rank = entry.Rank;
+                        }
+                    }
+                }
+                logger.Debug($"Rank : {rank}");
+                int limit = 200;
+                int offset = -1;
+                int tasksNumber = (int)Math.Ceiling((double)rank / limit);
+                OnGetEntriesStarted(tasksNumber);
+                ConcurrentBag<List<IEntry>> bag = new ConcurrentBag<List<IEntry>>();
+
                 tokenSource = new CancellationTokenSource();
                 var token = tokenSource.Token;
                 Task[] tasks = new Task[tasksNumber];
@@ -271,7 +286,7 @@ namespace PoeApiClient.Services
                 int timeout = GetTimeout();
                 if (timeout > 0)
                 {
-                    logger.Debug($"Wait for timeout {timeout}");
+                    logger.Debug($"Wait for timeout {timeout}s");
                     await Task.Delay(timeout * 1000).ConfigureAwait(true);
                 }
 
@@ -429,7 +444,25 @@ namespace PoeApiClient.Services
             return requestLimit;
         }
 
-        public int GetInterval()
+        public int GetMinInterval()
+        {
+            int interval = Int32.MaxValue;
+
+            if (rules != null)
+            {
+                foreach (var rule in rules)
+                {
+                    if (rule.Interval < interval)
+                    {
+                        interval = rule.Interval;
+                    }
+                }
+            }
+
+            return interval;
+        }
+
+        public int GetMaxInterval()
         {
             int interval = 0;
 

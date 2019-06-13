@@ -85,30 +85,6 @@ namespace PoeRankingTracker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 8.25pt")]
-        public global::System.Drawing.Font Font {
-            get {
-                return ((global::System.Drawing.Font)(this["Font"]));
-            }
-            set {
-                this["Font"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("White")]
-        public global::System.Drawing.Color BackgroundColor {
-            get {
-                return ((global::System.Drawing.Color)(this["BackgroundColor"]));
-            }
-            set {
-                this["BackgroundColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ConfigurationMoved {
             get {
@@ -140,42 +116,6 @@ namespace PoeRankingTracker.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowDeadsAhead {
-            get {
-                return ((bool)(this["ShowDeadsAhead"]));
-            }
-            set {
-                this["ShowDeadsAhead"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowExperienceAhead {
-            get {
-                return ((bool)(this["ShowExperienceAhead"]));
-            }
-            set {
-                this["ShowExperienceAhead"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowExperienceBehind {
-            get {
-                return ((bool)(this["ShowExperienceBehind"]));
-            }
-            set {
-                this["ShowExperienceBehind"] = value;
-            }
-        }
-        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10000")]
@@ -194,18 +134,6 @@ namespace PoeRankingTracker.Properties {
             }
             set {
                 this["SessionId"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowRankByClass {
-            get {
-                return ((bool)(this["ShowRankByClass"]));
-            }
-            set {
-                this["ShowRankByClass"] = value;
             }
         }
         
@@ -232,25 +160,22 @@ namespace PoeRankingTracker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
-        public global::System.Drawing.Color FontColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Template {
             get {
-                return ((global::System.Drawing.Color)(this["FontColor"]));
+                return ((string)(this["Template"]));
             }
             set {
-                this["FontColor"] = value;
+                this["Template"] = value;
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowProgressBar {
+        [global::System.Configuration.DefaultSettingValueAttribute("Templates")]
+        public string TemplatesPath {
             get {
-                return ((bool)(this["ShowProgressBar"]));
-            }
-            set {
-                this["ShowProgressBar"] = value;
+                return ((string)(this["TemplatesPath"]));
             }
         }
     }
