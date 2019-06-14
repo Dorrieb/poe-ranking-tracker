@@ -11,8 +11,6 @@
                 display: inline-block;
                 width: 100px;
             }
-            table {
-            }
             table th {
                 color: yellowgreen;
                 font-size: 12px;
@@ -37,20 +35,22 @@
             <table>
                 <thead>
                     <tr>
-                        <th colspan="2">{class} ({level})</th>
+                        <th colspan="2">
+                            <span id="class"></span>&nbsp;(<span id="level"></span>)
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <span class="label">{rankLabel}</span>
+                            <span id="rank-label" class="label"></span>
                             <br />
-                            <span class="value">{rank}</span>
+                            <span id="rank-value" class="value"></span>
                         </td>
                         <td>
-                            <span class="label">{rankByClassLabel}</span>
+                            <span id="rank-by-class-label" class="label"></span>
                             <br />
-                            <span class="value">{rankByClass}</span>
+                            <span id="rank-by-class-value" class="value"></span>
                         </td>
                     </tr>
                 </tbody>

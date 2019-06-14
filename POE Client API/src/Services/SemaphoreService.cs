@@ -35,6 +35,7 @@ namespace PoeApiClient.Services
 
         public void CreateSemaphore()
         {
+            int currentRequestLimit = httpClientService.GetCurrentRequestLimit();
             int maxRequestLimit = httpClientService.GetMaxRequestLimit();
             int interval = httpClientService.GetMinInterval();
 
@@ -47,8 +48,13 @@ namespace PoeApiClient.Services
             tokenSource = new CancellationTokenSource();
             token = tokenSource.Token;
             semaphoreNumber = maxRequestLimit;
-            logger.Debug($"Create semaphore with max = {semaphoreNumber}");
-            semaphore = new SemaphoreSlim(0, semaphoreNumber);
+            int initialCount = maxRequestLimit - currentRequestLimit;
+            if (initialCount < 0)
+            {
+                initialCount = 0;
+            }
+            logger.Debug($"Create semaphore with initial = {initialCount} and max = {semaphoreNumber}");
+            semaphore = new SemaphoreSlim(initialCount, semaphoreNumber);
             InitializeTimer(interval);
         }
 
@@ -101,7 +107,7 @@ namespace PoeApiClient.Services
         private void OnProcessGetRequestStarted(object sender, HttpRequestEventArgs args)
         {
             logger.Debug($"Wait for semaphore - start ({semaphore?.CurrentCount})");
-            semaphore?.WaitAsync(token);
+            semaphore?.Wait(token);
             logger.Debug($"Wait for semaphore - end ({semaphore?.CurrentCount})");
         }
 

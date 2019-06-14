@@ -6,32 +6,24 @@
                 font-family: Arial;
                 margin: 0;
             }
-
             #container {
                 background-color: #393939;
                 padding: 5px;
                 display: inline-block;
-                width: 125px;
+                width: 115px;
             }
-
-            table {
+            table th {
+                color: yellowgreen;
+                font-size: 12px;
+                font-weight: bold;
             }
-
-                table th {
-                    color: yellowgreen;
-                    font-size: 12px;
-                    font-weight: bold;
-                }
-
-                table td {
-                    text-align: center;
-                }
-
+            table td {
+                text-align: center;
+            }
             .label {
                 color: white;
                 font-size: 10px;
             }
-
             .value {
                 font-size: 10px;
                 font-weight: bold;
@@ -40,6 +32,7 @@
             progress {
                 width: 100%;
                 color: yellowgreen;
+                height: 5px;
             }
         </style>
     </head>
@@ -48,42 +41,44 @@
             <table>
                 <thead>
                     <tr>
-                        <th colspan="3">{class} ({level})</th>
+                        <th colspan="3">
+                            <span id="class"></span>&nbsp;(<span id="level"></span>)
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <span class="label">{rankLabel}</span>
+                            <span id="rank-label" class="label"></span>
                             <br />
-                            <span class="value">{rank}</span>
+                            <span id="rank-value" class="value"></span>
                         </td>
                         <td>
-                            <span class="label">{rankByClassLabel}</span>
+                            <span id="rank-by-class-label" class="label"></span>
                             <br />
-                            <span class="value">{rankByClass}</span>
+                            <span id="rank-by-class-value" class="value"></span>
                         </td>
                         <td>
                             <span class="label">&uarr;</span>
                             <br />
-                            <span class="value">{experienceAhead}</span>
+                            <span id="experience-ahead-value" class="value"></span>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <span class="label">{deadsAheadLabel}</span>
+                            <span id="deads-ahead-label" class="label"></span>
                             <br />
-                            <span class="value">{deadsAhead}</span>
+                            <span id="deads-ahead-value" class="value"></span>
                         </td>
                         <td>
                             <span class="label">&darr;</span>
                             <br />
-                            <span class="value">{experienceBehind}</span>
+                            <span id="experience-behind-value" class="value"></span>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <progress max="100" value="0"></progress>
+            <progress id="progress" max="100" value="0"></progress>
         </div>
     </body>
 </html>

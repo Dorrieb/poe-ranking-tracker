@@ -120,17 +120,24 @@ namespace PoeRankingTracker.Forms
 
                 errorProvider.SetError(leagueRaceCombo, "");
                 leagueRaceCombo.Items.Clear();
-                foreach (League league in leagues)
+                if (leagues != null)
                 {
-                    var item = new ComboBoxItem
+                    foreach (League league in leagues)
                     {
-                        Text = league.Id,
-                        Value = league,
-                    };
-                    leagueRaceCombo.Items.Add(item);
-                }
+                        var item = new ComboBoxItem
+                        {
+                            Text = league.Id,
+                            Value = league,
+                        };
+                        leagueRaceCombo.Items.Add(item);
+                    }
 
-                SetSelectedLeague();
+                    SetSelectedLeague();
+                }
+                else
+                {
+                    errorProvider.SetError(leagueRaceCombo, Strings.FailedToRetrieveLeagues);
+                }
             }
             catch (HttpRequestException e)
             {
@@ -427,7 +434,7 @@ namespace PoeRankingTracker.Forms
                         RankByClass = 6,
                     };
                     var content = htmlService.GetTemplate(Properties.Settings.Default.Template);
-                    content = htmlService.UpdateContent(content, configuration);
+                    content = htmlService.UpdateContent(content, configuration, false);
 
                     webBrowser.Document.Write(content);
                     webBrowser.Refresh();

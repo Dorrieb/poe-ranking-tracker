@@ -1,4 +1,5 @@
-﻿using PoeApiClient.Models;
+﻿using HtmlAgilityPack;
+using PoeApiClient.Models;
 using PoeRankingTracker.Models;
 using PoeRankingTracker.Resources.Translations;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace PoeRankingTracker.Services
     public interface IHtmlService
     {
         HtmlConfiguration BuildHtmlConfiguration(List<IEntry> entries, IEntry entry);
-        string UpdateContent(string content, HtmlConfiguration configuration);
+        string UpdateContent(string content, HtmlConfiguration configuration, bool setProgressToMax);
         string GetTemplate(string templatePath);
     }
 
@@ -63,44 +64,52 @@ namespace PoeRankingTracker.Services
             return configuration;
         }
 
-        public string UpdateContent(string content, HtmlConfiguration configuration)
+        public string UpdateContent(string content, HtmlConfiguration configuration, bool setProgressToMax)
         {
             Contract.Requires(content != null && configuration != null);
 
-            content = content.Replace("{class}", configuration.CharacterClass.ToString());
-            content = content.Replace("{level}", $"{configuration.Level}");
-            content = content.Replace("{rankLabel}", Strings.GlobalRank);
-            content = content.Replace("{rank}", formatterService.GetFormattedNumber(configuration.Rank));
-            content = content.Replace("{rankByClassLabel}", Strings.ClassRank);
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(content);
+
+            SetNodeHtml(document, "class", configuration.CharacterClass.ToString());
+            SetNodeHtml(document, "level", $"{configuration.Level}");
+            SetNodeHtml(document, "rank-label", Strings.GlobalRank);
+            SetNodeHtml(document, "rank-value", formatterService.GetFormattedNumber(configuration.Rank));
+            SetNodeHtml(document, "rank-by-class-label", Strings.ClassRank);
             var rankByClass = formatterService.GetFormattedNumber(configuration.RankByClass);
             if (rankByClass == "0")
             {
                 rankByClass = "-";
             }
-            content = content.Replace("{rankByClass}", rankByClass);
-            content = content.Replace("{experienceAheadLabel}", formatterService.GetFormattedNumber(configuration.Rank - 1));
+            SetNodeHtml(document, "rank-by-class-value", rankByClass);
+            SetNodeHtml(document, "experience-ahead-label", formatterService.GetFormattedNumber(configuration.Rank - 1));
             var experienceAhead = formatterService.GetFormattedExperience(configuration.ExperienceAhead);
             if (experienceAhead.Length == 0)
             {
                 experienceAhead = "-";
             };
-            content = content.Replace("{experienceAhead}", experienceAhead);
-            content = content.Replace("{experienceBehindLabel}", formatterService.GetFormattedNumber(configuration.Rank + 1));
+            SetNodeHtml(document, "experience-ahead-value", experienceAhead);
+            SetNodeHtml(document, "experience-behind-label", formatterService.GetFormattedNumber(configuration.Rank + 1));
             var experienceBehind = formatterService.GetFormattedExperience(configuration.ExperienceBehind);
             if (experienceBehind.Length == 0)
             {
                 experienceBehind = "-";
             };
-            content = content.Replace("{experienceBehind}", experienceBehind);
-            content = content.Replace("{deadsAheadLabel}", Strings.DeadsAhead);
+            SetNodeHtml(document, "experience-behind-value", experienceBehind);
+            SetNodeHtml(document, "deads-ahead-label", Strings.DeadsAhead);
             var deadsAhead = formatterService.GetFormattedNumber(configuration.DeadsAhead);
             if (deadsAhead == "0")
             {
                 deadsAhead = "-";
             }
-            content = content.Replace("{deadsAhead}", deadsAhead);
+            SetNodeHtml(document, "deads-ahead-value", deadsAhead);
 
-            return content;
+            if (setProgressToMax)
+            {
+                SetProgressBarToMaxValue(document);
+            }
+
+            return document.DocumentNode.InnerHtml;
         }
 
         public string GetTemplate(string templatePath)
@@ -108,6 +117,25 @@ namespace PoeRankingTracker.Services
             string currentDirectory = Directory.GetCurrentDirectory();
             var filePath = $"{currentDirectory}/{templatePath}";
             return File.ReadAllText(filePath);
+        }
+
+        private void SetNodeHtml(HtmlDocument document, string nodeId, string value)
+        {
+            var node = document.GetElementbyId(nodeId);
+            if (node != null)
+            {
+                node.InnerHtml = value;
+            }
+        }
+
+        private void SetProgressBarToMaxValue(HtmlDocument document)
+        {
+            var progress = document.GetElementbyId("progress");
+            if (progress != null)
+            {
+                progress.SetAttributeValue("value", "100");
+                progress.SetAttributeValue("max", "100");
+            }
         }
     }
 }

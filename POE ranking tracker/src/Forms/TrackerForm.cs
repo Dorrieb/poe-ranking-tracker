@@ -58,23 +58,38 @@ namespace PoeRankingTracker.Forms
         {
             httpClientService.GetEntriesStarted += ProgressStarted;
             httpClientService.GetEntriesIncremented += ProgressIncremented;
-            httpClientService.GetEntriesEnded += ProgressEnded;
         }
 
         private void ProgressStarted(object sender, ApiEventArgs args)
         {
-            currentProgress = 0;
-            maxProgress = args.Value;
+            Invoke(new MethodInvoker(delegate
+            {
+                currentProgress = 0;
+                maxProgress = args.Value;
+
+                var progress = webBrowser.Document.GetElementsByTagName("progress");
+                if (progress != null && progress.Count > 0)
+                {
+                    progress[0].SetAttribute("value", "0");
+                    progress[0].SetAttribute("max", $"{maxProgress}");
+                }
+            }));
         }
 
         private void ProgressIncremented(object sender, ApiEventArgs args)
         {
             currentProgress += args.Value;
+
+            Invoke(new MethodInvoker(delegate
+            {
+                var progress = webBrowser.Document.GetElementsByTagName("progress");
+                if (progress != null && progress.Count > 0)
+                {
+                    progress[0].SetAttribute("value", $"{currentProgress}");
+                }
+            }));
         }
 
-        private void ProgressEnded(object sender, ApiEventArgs args)
-        {
-        }
 
         public void SetConfiguration(TrackerConfiguration configuration)
         {
@@ -105,9 +120,9 @@ namespace PoeRankingTracker.Forms
 
                 timer?.Start();
             }
-            catch (TaskCanceledException e)
+            catch (OperationCanceledException e)
             {
-                logger.Debug(e, "Task cancelled");
+                logger.Debug(e, "Operation cancelled");
             }
             catch (CharacterNotFoundException e)
             {
@@ -121,11 +136,12 @@ namespace PoeRankingTracker.Forms
 
         private void RefreshDisplay(List<IEntry> entries)
         {
-            webBrowser.Invoke(new MethodInvoker(delegate
+            logger.Debug("RefreshDisplay");
+            Invoke(new MethodInvoker(delegate
             {
                 var htmlConfiguration = htmlService.BuildHtmlConfiguration(entries, configuration.Entry);
                 var content = templateContent.Clone() as string;
-                content = htmlService.UpdateContent(content, htmlConfiguration);
+                content = htmlService.UpdateContent(content, htmlConfiguration, true);
                 webBrowser.Document.OpenNew(true);
                 webBrowser.Document.Write(content);
                 webBrowser.Refresh();
@@ -200,12 +216,13 @@ namespace PoeRankingTracker.Forms
 
         private void WebBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            logger.Debug("WebBrowser_DocumentCompleted");
             if (initialLoading)
             {
                 initialLoading = false;
                 webBrowser.Document.OpenNew(true);
                 var htmlConfiguration = htmlService.BuildHtmlConfiguration(null, configuration.Entry);
-                var content = htmlService.UpdateContent(templateContent, htmlConfiguration);
+                var content = htmlService.UpdateContent(templateContent, htmlConfiguration, false);
                 webBrowser.Document.Write(content);
                 webBrowser.Document.MouseDown += new HtmlElementEventHandler(TrackerForm_MouseDown);
                 webBrowser.Document.MouseMove += new HtmlElementEventHandler(TrackerForm_MouseMove);
@@ -219,13 +236,6 @@ namespace PoeRankingTracker.Forms
                 container.DoubleClick += new HtmlElementEventHandler(TrackerForm_MouseDoubleClick);
                 webBrowser.Size = container.OffsetRectangle.Size;
                 Size = container.OffsetRectangle.Size;
-            }
-
-            var progress = webBrowser.Document.GetElementsByTagName("progress");
-            if (progress != null && progress.Count > 0)
-            {
-                progress[0].SetAttribute("value", $"{currentProgress}");
-                progress[0].SetAttribute("max", $"{maxProgress}");
             }
         }
 
