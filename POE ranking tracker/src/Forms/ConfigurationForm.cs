@@ -434,7 +434,8 @@ namespace PoeRankingTracker.Forms
                         RankByClass = 6,
                     };
                     var content = htmlService.GetTemplate(Properties.Settings.Default.Template);
-                    content = htmlService.UpdateContent(content, configuration, false);
+                    htmlService.SetContent(content);
+                    content = htmlService.UpdateContent(configuration, false);
 
                     webBrowser.Document.Write(content);
                     webBrowser.Refresh();

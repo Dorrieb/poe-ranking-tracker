@@ -2,6 +2,7 @@
 using PoeApiClient.Models;
 using PoeRankingTracker.Models;
 using PoeRankingTracker.Resources.Translations;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -10,8 +11,9 @@ namespace PoeRankingTracker.Services
 {
     public interface IHtmlService
     {
+        void SetContent(string content);
         HtmlConfiguration BuildHtmlConfiguration(List<IEntry> entries, IEntry entry);
-        string UpdateContent(string content, HtmlConfiguration configuration, bool setProgressToMax);
+        string UpdateContent(HtmlConfiguration configuration, bool setProgressToMax);
         string GetTemplate(string templatePath);
     }
 
@@ -19,11 +21,20 @@ namespace PoeRankingTracker.Services
     {
         private readonly IFormatterService formatterService;
         private readonly ICharacterService characterService;
+        private readonly HtmlDocument document;
 
         public HtmlService(IFormatterService formatterService, ICharacterService characterService)
         {
             this.formatterService = formatterService;
             this.characterService = characterService;
+            this.document = new HtmlDocument();
+        }
+
+        public void SetContent(string content)
+        {
+            Contract.Requires(content != null);
+
+            document.LoadHtml(content);
         }
 
         public HtmlConfiguration BuildHtmlConfiguration(List<IEntry> entries, IEntry entry)
@@ -64,12 +75,9 @@ namespace PoeRankingTracker.Services
             return configuration;
         }
 
-        public string UpdateContent(string content, HtmlConfiguration configuration, bool setProgressToMax)
+        public string UpdateContent(HtmlConfiguration configuration, bool setProgressToMax)
         {
-            Contract.Requires(content != null && configuration != null);
-
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(content);
+            Contract.Requires(configuration != null);
 
             SetNodeHtml(document, "class", configuration.CharacterClass.ToString());
             SetNodeHtml(document, "level", $"{configuration.Level}");

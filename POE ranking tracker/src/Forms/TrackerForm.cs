@@ -98,6 +98,7 @@ namespace PoeRankingTracker.Forms
             this.configuration = configuration;
             InitializeTranslations();
             templateContent = htmlService.GetTemplate(configuration.Template);
+            htmlService.SetContent(templateContent);
             initialLoading = true;
             webBrowser.Navigate(new Uri("about:blank"));
         }
@@ -140,8 +141,7 @@ namespace PoeRankingTracker.Forms
             Invoke(new MethodInvoker(delegate
             {
                 var htmlConfiguration = htmlService.BuildHtmlConfiguration(entries, configuration.Entry);
-                var content = templateContent.Clone() as string;
-                content = htmlService.UpdateContent(content, htmlConfiguration, true);
+                var content = htmlService.UpdateContent(htmlConfiguration, true);
                 webBrowser.Document.OpenNew(true);
                 webBrowser.Document.Write(content);
                 webBrowser.Refresh();
@@ -222,7 +222,7 @@ namespace PoeRankingTracker.Forms
                 initialLoading = false;
                 webBrowser.Document.OpenNew(true);
                 var htmlConfiguration = htmlService.BuildHtmlConfiguration(null, configuration.Entry);
-                var content = htmlService.UpdateContent(templateContent, htmlConfiguration, false);
+                var content = htmlService.UpdateContent(htmlConfiguration, false);
                 webBrowser.Document.Write(content);
                 webBrowser.Document.MouseDown += new HtmlElementEventHandler(TrackerForm_MouseDown);
                 webBrowser.Document.MouseMove += new HtmlElementEventHandler(TrackerForm_MouseMove);
