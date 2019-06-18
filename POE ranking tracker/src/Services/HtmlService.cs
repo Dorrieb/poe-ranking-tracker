@@ -1,8 +1,8 @@
-﻿using HtmlAgilityPack;
+﻿using AngleSharp.Dom;
+using AngleSharp.Html.Parser;
 using PoeApiClient.Models;
 using PoeRankingTracker.Models;
 using PoeRankingTracker.Resources.Translations;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -11,30 +11,22 @@ namespace PoeRankingTracker.Services
 {
     public interface IHtmlService
     {
-        void SetContent(string content);
         HtmlConfiguration BuildHtmlConfiguration(List<IEntry> entries, IEntry entry);
-        string UpdateContent(HtmlConfiguration configuration, bool setProgressToMax);
+        string UpdateContent(string content, HtmlConfiguration configuration, bool setProgressToMax);
         string GetTemplate(string templatePath);
     }
 
-    public class HtmlService: IHtmlService
+    public class HtmlService : IHtmlService
     {
         private readonly IFormatterService formatterService;
         private readonly ICharacterService characterService;
-        private readonly HtmlDocument document;
+        private readonly IHtmlParser parser;
 
         public HtmlService(IFormatterService formatterService, ICharacterService characterService)
         {
             this.formatterService = formatterService;
             this.characterService = characterService;
-            this.document = new HtmlDocument();
-        }
-
-        public void SetContent(string content)
-        {
-            Contract.Requires(content != null);
-
-            document.LoadHtml(content);
+            parser = new HtmlParser();
         }
 
         public HtmlConfiguration BuildHtmlConfiguration(List<IEntry> entries, IEntry entry)
@@ -75,9 +67,11 @@ namespace PoeRankingTracker.Services
             return configuration;
         }
 
-        public string UpdateContent(HtmlConfiguration configuration, bool setProgressToMax)
+        public string UpdateContent(string content, HtmlConfiguration configuration, bool setProgressToMax)
         {
             Contract.Requires(configuration != null);
+
+            var document = parser.ParseDocument(content);
 
             SetNodeHtml(document, "class", configuration.CharacterClass.ToString());
             SetNodeHtml(document, "level", $"{configuration.Level}");
@@ -117,7 +111,11 @@ namespace PoeRankingTracker.Services
                 SetProgressBarToMaxValue(document);
             }
 
-            return document.DocumentNode.InnerHtml;
+            var result = document.DocumentElement.OuterHtml;
+
+            document.Dispose();
+
+            return result;
         }
 
         public string GetTemplate(string templatePath)
@@ -127,22 +125,22 @@ namespace PoeRankingTracker.Services
             return File.ReadAllText(filePath);
         }
 
-        private void SetNodeHtml(HtmlDocument document, string nodeId, string value)
+        private void SetNodeHtml(IDocument document, string nodeId, string value)
         {
-            var node = document.GetElementbyId(nodeId);
+            var node = document.GetElementById(nodeId);
             if (node != null)
             {
                 node.InnerHtml = value;
             }
         }
 
-        private void SetProgressBarToMaxValue(HtmlDocument document)
+        private void SetProgressBarToMaxValue(IDocument document)
         {
-            var progress = document.GetElementbyId("progress");
+            var progress = document.GetElementById("progress");
             if (progress != null)
             {
-                progress.SetAttributeValue("value", "100");
-                progress.SetAttributeValue("max", "100");
+                progress.SetAttribute("value", "100");
+                progress.SetAttribute("max", "100");
             }
         }
     }

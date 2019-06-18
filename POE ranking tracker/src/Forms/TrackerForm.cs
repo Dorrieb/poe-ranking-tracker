@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Drawing;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -98,7 +97,6 @@ namespace PoeRankingTracker.Forms
             this.configuration = configuration;
             InitializeTranslations();
             templateContent = htmlService.GetTemplate(configuration.Template);
-            htmlService.SetContent(templateContent);
             initialLoading = true;
             webBrowser.Navigate(new Uri("about:blank"));
         }
@@ -137,12 +135,10 @@ namespace PoeRankingTracker.Forms
 
         private void RefreshDisplay(List<IEntry> entries)
         {
-            logger.Debug("RefreshDisplay");
             Invoke(new MethodInvoker(delegate
             {
                 var htmlConfiguration = htmlService.BuildHtmlConfiguration(entries, configuration.Entry);
-                var content = htmlService.UpdateContent(htmlConfiguration, true);
-                webBrowser.Document.OpenNew(true);
+                var content = htmlService.UpdateContent(templateContent, htmlConfiguration, true);
                 webBrowser.Document.Write(content);
                 webBrowser.Refresh();
             }));
@@ -220,9 +216,8 @@ namespace PoeRankingTracker.Forms
             if (initialLoading)
             {
                 initialLoading = false;
-                webBrowser.Document.OpenNew(true);
                 var htmlConfiguration = htmlService.BuildHtmlConfiguration(null, configuration.Entry);
-                var content = htmlService.UpdateContent(htmlConfiguration, false);
+                var content = htmlService.UpdateContent(templateContent, htmlConfiguration, false);
                 webBrowser.Document.Write(content);
                 webBrowser.Document.MouseDown += new HtmlElementEventHandler(TrackerForm_MouseDown);
                 webBrowser.Document.MouseMove += new HtmlElementEventHandler(TrackerForm_MouseMove);

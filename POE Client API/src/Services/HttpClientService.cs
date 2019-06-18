@@ -189,12 +189,22 @@ namespace PoeApiClient.Services
                 }
                 await Task.WhenAll(tasks).ConfigureAwait(true);
 
+                foreach (var task in tasks)
+                {
+                    task.Dispose();
+                }
+
                 OnGetEntriesEnded(tasksNumber);
 
-                foreach(var nextEntries in bag)
+                while (!bag.IsEmpty)
                 {
-                    entries.AddRange(nextEntries);
+                    if (bag.TryTake(out List<IEntry> bagEntries))
+                    {
+                        entries.AddRange(bagEntries);
+                    }
                 }
+
+                bag = null;
 
                 entries.Sort((IEntry x, IEntry y) =>
                 {
