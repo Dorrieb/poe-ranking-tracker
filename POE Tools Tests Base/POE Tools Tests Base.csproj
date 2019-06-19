@@ -85,6 +85,7 @@
     <None Include="Data\League.json" />
     <None Include="Data\Leagues.json" />
     <None Include="Data\LeagueWithEntries.json" />
+    <None Include="Data\StandardAccount.json" />
     <None Include="Data\StandardOffset0Limit200.json" />
     <None Include="Data\StandardOffset200Limit200.json" />
     <None Include="Data\StandardOffset400Limit200.json" />

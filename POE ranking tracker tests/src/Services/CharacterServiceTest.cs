@@ -179,15 +179,15 @@ namespace PoeRankingTrackerTests.Services
             IEntry entry8 = ladder96.Entries[16];
             IEntry entry9 = ladder96.Entries[19];
 
-            long n1 = characterService.GetExperienceDifference(entry1, entry2);
-            long n2 = characterService.GetExperienceDifference(entry2, entry3);
-            long n3 = characterService.GetExperienceDifference(entry3, entry4);
-            long n4 = characterService.GetExperienceDifference(entry4, entry5);
-            long n5 = characterService.GetExperienceDifference(entry5, entry6);
-            long n6 = characterService.GetExperienceDifference(entry6, entry7);
-            long n7 = characterService.GetExperienceDifference(entry7, entry8);
-            long n8 = characterService.GetExperienceDifference(entry8, entry9);
-            long n9 = characterService.GetExperienceDifference(entry1, entry9);
+            long n1 = entry1.Character.Experience - entry2.Character.Experience;
+            long n2 = entry2.Character.Experience - entry3.Character.Experience;
+            long n3 = entry3.Character.Experience - entry4.Character.Experience;
+            long n4 = entry4.Character.Experience - entry5.Character.Experience;
+            long n5 = entry5.Character.Experience - entry6.Character.Experience;
+            long n6 = entry6.Character.Experience - entry7.Character.Experience;
+            long n7 = entry7.Character.Experience - entry8.Character.Experience;
+            long n8 = entry8.Character.Experience - entry9.Character.Experience;
+            long n9 = entry1.Character.Experience - entry9.Character.Experience;
 
             Assert.AreEqual(181216, n1);
             Assert.AreEqual(263218, n2);

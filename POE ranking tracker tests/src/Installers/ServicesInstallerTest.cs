@@ -41,7 +41,9 @@ namespace PoeRankingTrackerTests.Installers
         {
             var all = GetPublicClassesFromApplicationAssembly<RankingTrackerContext>(
                 c => c.Is<ICharacterService>() ||
-                     c.Is<IFormService>()
+                     c.Is<IFormatterService>() ||
+                     c.Is<IFormService>() ||
+                     c.Is<IHtmlService>()
             );
             var registered = GetImplementationTypes();
 
@@ -77,20 +79,24 @@ namespace PoeRankingTrackerTests.Installers
 
         private IHandler[] GetHandlers()
         {
-            var handlers = new IHandler[2];
+            var handlers = new IHandler[4];
 
             handlers[0] = GetHandlersFor(typeof(ICharacterService), container)[0];
-            handlers[1] = GetHandlersFor(typeof(IFormService), container)[0];
+            handlers[1] = GetHandlersFor(typeof(IFormatterService), container)[0];
+            handlers[2] = GetHandlersFor(typeof(IFormService), container)[0];
+            handlers[3] = GetHandlersFor(typeof(IHtmlService), container)[0];
 
             return handlers;
         }
 
         private Type[] GetImplementationTypes()
         {
-            var registered = new Type[2];
+            var registered = new Type[4];
 
             registered[0] = GetImplementationTypesFor(typeof(ICharacterService), container)[0];
-            registered[1] = GetImplementationTypesFor(typeof(IFormService), container)[0];
+            registered[1] = GetImplementationTypesFor(typeof(IFormatterService), container)[0];
+            registered[2] = GetImplementationTypesFor(typeof(IFormService), container)[0];
+            registered[3] = GetImplementationTypesFor(typeof(IHtmlService), container)[0];
 
             return registered;
         }

@@ -143,6 +143,16 @@ namespace POEToolsTestsBase.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] StandardAccount {
+            get {
+                object obj = ResourceManager.GetObject("StandardAccount", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] StandardOffset0Limit200 {
             get {
                 object obj = ResourceManager.GetObject("StandardOffset0Limit200", resourceCulture);

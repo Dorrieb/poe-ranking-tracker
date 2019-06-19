@@ -166,15 +166,16 @@ namespace PoeApiClientTests.Services
         public void GetEntries()
         {
             string leagueId = "Standard";
-            string accountName = "morinfa";
+            string accountName = "Lawyne";
             string characterName = "Lawyne";
-            int rank = 591;
             var url1 = $"https://api.pathofexile.com/ladders/{leagueId}?offset=0&limit=200";
             var url2 = $"https://api.pathofexile.com/ladders/{leagueId}?offset=200&limit=200";
             var url3 = $"https://api.pathofexile.com/ladders/{leagueId}?offset=400&limit=200";
+            var url4 = $"https://api.pathofexile.com/ladders/{leagueId}?accountName={accountName}";
             var ladder1Json = Encoding.UTF8.GetString(POEToolsTestsBase.Properties.Resources.StandardOffset0Limit200);
             var ladder2Json = Encoding.UTF8.GetString(POEToolsTestsBase.Properties.Resources.StandardOffset200Limit200);
             var ladder3Json = Encoding.UTF8.GetString(POEToolsTestsBase.Properties.Resources.StandardOffset400Limit200);
+            var ladder4Json = Encoding.UTF8.GetString(POEToolsTestsBase.Properties.Resources.StandardAccount);
             var list = new List<UrlWithResponse>()
             {
                 new UrlWithResponse()
@@ -194,10 +195,16 @@ namespace PoeApiClientTests.Services
                     Url = url3,
                     Response = ladder3Json,
                     StatusCode = HttpStatusCode.OK,
-                }
+                },
+                new UrlWithResponse()
+                {
+                    Url = url4,
+                    Response = ladder4Json,
+                    StatusCode = HttpStatusCode.OK,
+                },
             };
             service = GetService(list);
-            var entries = service.GetEntries(leagueId, accountName, characterName, rank).Result;
+            var entries = service.GetEntries(leagueId, accountName, characterName).Result;
             Assert.AreEqual(600, entries.Count);
         }
 
@@ -208,7 +215,6 @@ namespace PoeApiClientTests.Services
             string leagueId = "Standard";
             string accountName = "morinfa";
             string characterName = "Lawyne";
-            int rank = 591;
             var url1 = $"https://api.pathofexile.com/ladders/{leagueId}?offset=0&limit=200";
             var url2 = $"https://api.pathofexile.com/ladders/{leagueId}?offset=200&limit=200";
             var url3 = $"https://api.pathofexile.com/ladders/{leagueId}?offset=400&limit=200";
@@ -273,7 +279,7 @@ namespace PoeApiClientTests.Services
                 }
             };
             service = GetService(list);
-            var entries = service.GetEntries(leagueId, accountName, characterName, rank).Result;
+            var entries = service.GetEntries(leagueId, accountName, characterName).Result;
             service.CancelRequested += delegate (object sender, EventArgs args)
             {
                 ok = true;
@@ -397,7 +403,7 @@ namespace PoeApiClientTests.Services
                 }
             };
             service = GetService(list);
-            int interval = service.GetInterval();
+            int interval = service.GetMaxInterval();
             Assert.AreEqual(0, interval);
         }
 
@@ -429,7 +435,7 @@ namespace PoeApiClientTests.Services
             };
             service = GetService(list);
             _ = service.GetLeaguesAsync().Result;
-            int interval = service.GetInterval();
+            int interval = service.GetMaxInterval();
             Assert.AreEqual(10, interval);
         }
 
@@ -496,7 +502,6 @@ namespace PoeApiClientTests.Services
                             Content = new StringContent(data.Response, Encoding.UTF8, "application/json")
                         };
 
-                        // Adjust your response headers here
                         if (data.Rule != null)
                         {
                             var key = "x-rate-limit-account";
