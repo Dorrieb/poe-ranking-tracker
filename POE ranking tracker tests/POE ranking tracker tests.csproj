@@ -82,6 +82,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="src\Exceptions\CharacterNotFoundExceptionTest.cs" />
     <Compile Include="src\Installers\ApiInstallerTest.cs" />
     <Compile Include="src\Installers\FormsInstaller.cs" />
     <Compile Include="src\Installers\ServicesInstallerTest.cs" />
