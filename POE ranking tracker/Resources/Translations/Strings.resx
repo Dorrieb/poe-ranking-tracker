@@ -161,6 +161,10 @@
     <value>Rank {0}</value>
     <comment>Experience to lose rank label (preview and tracker)</comment>
   </data>
+  <data name="ExperiencePerHour" xml:space="preserve">
+    <value>XP/h</value>
+    <comment>Experience per hour label</comment>
+  </data>
   <data name="FailedToRetrieveLeague" xml:space="preserve">
     <value>Failed to retrieve league</value>
     <comment>Failed to retrieve league error</comment>

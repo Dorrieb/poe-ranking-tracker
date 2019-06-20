@@ -178,7 +178,13 @@
     </Compile>
     <Compile Include="src\Services\HtmlService.cs" />
     <Content Include="rank.ico" />
-    <Resource Include="Templates\Simple.html">
+    <Resource Include="Templates\Light with XP.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Templates\Detailed without progress.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Templates\Light.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <None Include="NLog.xsd">

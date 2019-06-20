@@ -27,6 +27,8 @@ namespace PoeRankingTracker.Forms
         private bool initialLoading = false;
         private int currentProgress = 0;
         private int maxProgress = 0;
+        private long initialExperience;
+        private long secondsPlayed = 0;
 
         public TrackerForm(IHttpClientService httpClientService, ICharacterService characterService, IHtmlService htmlService)
         {
@@ -89,13 +91,14 @@ namespace PoeRankingTracker.Forms
             }));
         }
 
-
         public void SetConfiguration(TrackerConfiguration configuration)
         {
             Contract.Requires(configuration != null);
 
             this.configuration = configuration;
             InitializeTranslations();
+            secondsPlayed = 0;
+            initialExperience = configuration.Entry.Character.Experience;
             templateContent = htmlService.GetTemplate(configuration.Template);
             initialLoading = true;
             webBrowser.Navigate(new Uri("about:blank"));
@@ -114,7 +117,7 @@ namespace PoeRankingTracker.Forms
                 if (entryRefreshed != null)
                 {
                     configuration.Entry = entryRefreshed;
-                    RefreshDisplay(entries);
+                    RefreshDisplay(entries, entryRefreshed);
                 }
 
                 timer?.Start();
@@ -133,11 +136,19 @@ namespace PoeRankingTracker.Forms
             }
         }
 
-        private void RefreshDisplay(List<IEntry> entries)
+        private void RefreshDisplay(List<IEntry> entries, IEntry entry)
         {
             Invoke(new MethodInvoker(delegate
             {
                 var htmlConfiguration = htmlService.BuildHtmlConfiguration(entries, configuration.Entry);
+                if (secondsPlayed > 0)
+                {
+                    htmlConfiguration.ExperiencePerHour = (entry.Character.Experience - initialExperience) * 3600 / secondsPlayed;
+                }
+                else
+                {
+                    htmlConfiguration.ExperiencePerHour = 0;
+                }
                 var content = htmlService.UpdateContent(templateContent, htmlConfiguration, true);
                 webBrowser.Document.Write(content);
                 webBrowser.Refresh();
@@ -152,6 +163,7 @@ namespace PoeRankingTracker.Forms
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
+            secondsPlayed += Properties.Settings.Default.TimerInterval / 1000;
             RetrieveData();
         }
 

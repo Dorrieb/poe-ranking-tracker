@@ -98,6 +98,13 @@ namespace PoeRankingTracker.Services
                 experienceBehind = "-";
             };
             SetNodeHtml(document, "experience-behind-value", experienceBehind);
+            SetNodeHtml(document, "experience-per-hour-label", Strings.ExperiencePerHour);
+            var experiencePerHour = formatterService.GetFormattedExperience(configuration.ExperiencePerHour);
+            if (experiencePerHour.Length == 0)
+            {
+                experiencePerHour = "-";
+            };
+            SetNodeHtml(document, "experience-per-hour-value", experiencePerHour);
             SetNodeHtml(document, "deads-ahead-label", Strings.DeadsAhead);
             var deadsAhead = formatterService.GetFormattedNumber(configuration.DeadsAhead);
             if (deadsAhead == "0")

@@ -68,7 +68,7 @@
             // okButton
             // 
             this.okButton.Enabled = false;
-            this.okButton.Location = new System.Drawing.Point(165, 414);
+            this.okButton.Location = new System.Drawing.Point(165, 482);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 0;
@@ -250,7 +250,7 @@
             this.samplePanel.Controls.Add(this.sampleLabel);
             this.samplePanel.Location = new System.Drawing.Point(12, 189);
             this.samplePanel.Name = "samplePanel";
-            this.samplePanel.Size = new System.Drawing.Size(380, 209);
+            this.samplePanel.Size = new System.Drawing.Size(380, 287);
             this.samplePanel.TabIndex = 14;
             // 
             // webBrowser
@@ -261,7 +261,7 @@
             this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser.Name = "webBrowser";
             this.webBrowser.ScrollBarsEnabled = false;
-            this.webBrowser.Size = new System.Drawing.Size(318, 123);
+            this.webBrowser.Size = new System.Drawing.Size(349, 204);
             this.webBrowser.TabIndex = 15;
             this.webBrowser.Url = new System.Uri("about:blank", System.UriKind.Absolute);
             this.webBrowser.Visible = false;
@@ -290,7 +290,7 @@
             // ConfigurationForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(404, 447);
+            this.ClientSize = new System.Drawing.Size(404, 514);
             this.Controls.Add(this.samplePanel);
             this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.okButton);

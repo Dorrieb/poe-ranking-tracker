@@ -429,7 +429,8 @@ namespace PoeRankingTracker.Forms
                         DeadsAhead = 7,
                         ExperienceAhead = 45527983,
                         ExperienceBehind = 199532,
-                        Level = 85,
+                        ExperiencePerHour = 9523741,
+                        Level = 95,
                         Rank = 27,
                         RankByClass = 6,
                     };
