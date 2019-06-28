@@ -89,16 +89,16 @@
     <Compile Include="src\Installers\FormattersInstaller.cs" />
     <Compile Include="src\Installers\ConvertersInstaller.cs" />
     <Compile Include="src\Models\CharacterClass.cs" />
-    <Compile Include="src\Models\IChallenges.cs" />
-    <Compile Include="src\Models\IAccount.cs" />
-    <Compile Include="src\Models\ICharacter.cs" />
-    <Compile Include="src\Models\IEntry.cs" />
-    <Compile Include="src\Models\ILadder.cs" />
+    <Compile Include="src\Models\Challenges.cs" />
+    <Compile Include="src\Models\Account.cs" />
+    <Compile Include="src\Models\Character.cs" />
+    <Compile Include="src\Models\Entry.cs" />
+    <Compile Include="src\Models\Ladder.cs" />
     <Compile Include="src\Models\LeagueRule.cs" />
     <Compile Include="src\Models\RuleApi.cs" />
     <Compile Include="src\Services\HttpClientService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Models\ILeague.cs" />
+    <Compile Include="src\Models\League.cs" />
     <Compile Include="src\Models\Realm.cs" />
     <Compile Include="src\Services\SemaphoreService.cs" />
   </ItemGroup>
