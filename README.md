@@ -1,43 +1,61 @@
 # Path of Exile ranking tracker #
 
-This tracker displays your current progression in any league/event.
+This tracker displays your current progression in any league/event (including private leagues).
 It periodically polls ladder information to display the rank and progress information of the character you chose.
+
+You can customize the default renderers by simply editing the provided HTML templates, or better, create new ones !
 
 # Configuration #
 
-![Configuration sample](https://i.imgur.com/ErYUusM.png)
+![Configuration sample](https://i.imgur.com/VUhGdlg.png)
 
 1. Choose a language from the "Language" drop-down list
    1. Default language is computed from your OS language
 2. Select a league from the "League/Race" drop-down list
    1. You can enter the name of a private league instead of selecting a public league.
-2. Fill in your account name
-3. Select a character from the "Character Name" drop-down list
+3. Fill in your account name
+4. Select a character from the "Character Name" drop-down list
    1. The characters list is populated after selecting a league and filling your account name
-4. Optionally, fill in your [Session Id](#session-id-cookie "Goto Session Id information")
+5. Optionally, fill in your [Session Id](#session-id-cookie "Goto Session Id information")
    1. Session Id cookie is used to boost the retrieval of ladder information
    2. You can leave this field empty, it will work anyway
-5. Select options you want to display in the tracker
-   1. Show rank by class : display your character rank according to its ascendancy
-   2. Show number of deads/retired ahead : display the number of all deads or retired characters in front of you.
-   3. Show missing experience points to gain one rank : display the experience points number your character lacks to gain a rank. When it reaches zero you gain a rank.
-   4. Show present experience points to lose one rank : display the experience points number your character is above to the previous character. When it reaches zero, you lose a rank.
-   5. Show progress bar : display a progress bar showing the progress of the refresh process.
-6. Modify the colors of the tracker and see your changes in the preview panel
-   1. You can alter the font (name and color)
-   2. You can modify the background
+6. Select the HTML template used to render the tracker
 7. Click OK to start the tracker
 
 
 # Tracker #
 
-![Tracker sample](https://i.imgur.com/YTme2bc.png)
+![Tracker sample](https://i.imgur.com/stKpIr5.png)
 
 The information displayed on the tracker are periodically refreshed (10 seconds interval).
 
 You can move the tracker anywhere you want. It will be displayed on top of other applications.
 
 Double click on the tracker to return to configuration form.
+
+# Templates #
+
+Several HTML templates are provided.
+
+* Light
+
+![Tracker light](https://i.imgur.com/HlMStBG.png)
+
+* Light with experience per hour
+
+![Tracker light with XP](https://i.imgur.com/sO2vEvE.png)
+
+* Detailed
+
+![Tracker detailed](https://i.imgur.com/stKpIr5.png)
+
+* Detailed without progress bar
+
+![Tracker detailed no progress](https://i.imgur.com/CaFZkgr.png)
+
+You can customize them, or even create your own templates.
+
+CSS and JavaScript are supported in tracker rendering.
 
 # Language #
 
