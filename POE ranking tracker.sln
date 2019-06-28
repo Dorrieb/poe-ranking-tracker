@@ -13,6 +13,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POE Client API Tests", "POE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POE Tools Tests Base", "POE Tools Tests Base\POE Tools Tests Base.csproj", "{47CEAE2C-77C8-45BC-9586-FACA60376367}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0DFD0F38-E614-4E6B-8A47-A638A6FB648D}"
+	ProjectSection(SolutionItems) = preProject
+		LICENCE = LICENCE
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
