@@ -111,6 +111,7 @@
     <Compile Include="src\Models\RuleApiTest.cs" />
     <Compile Include="src\PropertiesTest.cs" />
     <Compile Include="src\Services\HttpClientServiceTest.cs" />
+    <Compile Include="src\Services\SemaphoreServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

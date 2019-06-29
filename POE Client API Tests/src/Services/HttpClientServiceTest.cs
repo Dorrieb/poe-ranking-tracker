@@ -1,8 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Moq.Protected;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PoeApiClient.Models;
 using PoeApiClient.Services;
 using RichardSzalay.MockHttp;
@@ -10,9 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace PoeApiClientTests.Services
@@ -526,8 +520,7 @@ namespace PoeApiClientTests.Services
                 }
 
                 client = new HttpClient(mockHttp);
-                service = new HttpClientService(client);
-                return service;
+                return new HttpClientService(client);
             }
         }
 
