@@ -18,6 +18,7 @@ namespace PoeRankingTracker.Forms
     {
         private Point lastPoint;
         private System.Timers.Timer timer = new System.Timers.Timer(Properties.Settings.Default.TimerInterval);
+        private System.Timers.Timer timerSecondsPlayed = new System.Timers.Timer(Properties.Settings.Default.TimerInterval);
         private TrackerConfiguration configuration;
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private IHttpClientService httpClientService;
@@ -134,6 +135,10 @@ namespace PoeRankingTracker.Forms
             {
                 logger.Debug(e, "Object disposed after tasks cancel");
             }
+            catch (InvalidOperationException e)
+            {
+                logger.Debug(e, "Object disposed with invalid operation");
+            }
         }
 
         private void RefreshDisplay(List<IEntry> entries, IEntry entry)
@@ -159,12 +164,19 @@ namespace PoeRankingTracker.Forms
         {
             timer.Elapsed += OnTimedEvent;
             timer.AutoReset = true;
+            timerSecondsPlayed.Elapsed += OnTimedSecondsPlayedEvent;
+            timerSecondsPlayed.AutoReset = true;
+            timerSecondsPlayed.Start();
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            secondsPlayed += Properties.Settings.Default.TimerInterval / 1000;
             RetrieveData();
+        }
+
+        private void OnTimedSecondsPlayedEvent(object source, ElapsedEventArgs e)
+        {
+            secondsPlayed += Properties.Settings.Default.TimerInterval / 1000;
         }
 
         private void TrackerForm_MouseMove(object sender, HtmlElementEventArgs  e)
@@ -184,12 +196,14 @@ namespace PoeRankingTracker.Forms
         private void TrackerForm_MouseDoubleClick(object sender, System.EventArgs e)
         {
             timer.Stop();
+            timerSecondsPlayed.Stop();
             RankingTrackerContext.CurrentContext.ShowConfigurationForm();
         }
 
         private void TrackerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             timer.Stop();
+            timerSecondsPlayed.Stop();
             Properties.Settings.Default.TrackerLocation = Location;
         }
 
@@ -203,6 +217,7 @@ namespace PoeRankingTracker.Forms
             if (!Visible)
             {
                 timer.Stop();
+                timerSecondsPlayed.Stop();
                 httpClientService.CancelPendingRequests();
                 initialLoading = true;
                 webBrowser.Document.MouseDown -= new HtmlElementEventHandler(TrackerForm_MouseDown);
@@ -217,6 +232,7 @@ namespace PoeRankingTracker.Forms
                 components?.Dispose();
                 webBrowser.Dispose();
                 timer.Dispose();
+                timerSecondsPlayed.Dispose();
             }
 
             base.Dispose(disposing);
