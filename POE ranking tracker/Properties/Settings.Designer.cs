@@ -178,5 +178,17 @@ namespace PoeRankingTracker.Properties {
                 return ((string)(this["TemplatesPath"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool InteractionsDisabled {
+            get {
+                return ((bool)(this["InteractionsDisabled"]));
+            }
+            set {
+                this["InteractionsDisabled"] = value;
+            }
+        }
     }
 }

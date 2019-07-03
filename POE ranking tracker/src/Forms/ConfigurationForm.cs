@@ -251,7 +251,10 @@ namespace PoeRankingTracker.Forms
 
         private void CheckIfOkButtonCanBeEnabled()
         {
-            okButton.Enabled = selectedEntry != null && Properties.Settings.Default.CharacterName.Length > 0 && Properties.Settings.Default.Template.Length > 0;
+            if (Properties.Settings.Default.Template != null)
+            {
+                okButton.Enabled = selectedEntry != null && Properties.Settings.Default.CharacterName.Length > 0 && Properties.Settings.Default.Template.Length > 0;
+            }
         }
 
         private void OkButton_Click(object sender, EventArgs e)
@@ -267,6 +270,7 @@ namespace PoeRankingTracker.Forms
                 AccountName = accountNameTextBox.Text,
                 Culture = CultureInfo.CurrentCulture,
                 Template = Properties.Settings.Default.Template,
+                InteractionsDisabled = Properties.Settings.Default.InteractionsDisabled,
             };
 
             RankingTrackerContext.CurrentContext.ShowTrackerForm(configuration);

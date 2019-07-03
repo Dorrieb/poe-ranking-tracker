@@ -57,6 +57,13 @@ You can customize them, or even create your own templates.
 
 CSS and JavaScript are supported in tracker rendering.
 
+# Disable tracker interactions #
+
+In order to deactivate accidental tracker move during gameplay, you can use the hotkey CTRL+SHIFT+O.
+This will enable mouse clicks through the tracker.
+
+To restore tracker mouse events, use the hotkey again.
+
 # Language #
 
 Application language is automatically set according to OS language.

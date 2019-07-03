@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -30,6 +31,17 @@ namespace PoeRankingTracker.Forms
         private int maxProgress = 0;
         private long initialExperience;
         private long secondsPlayed = 0;
+        private int hotkeyId = 0;
+        private bool formInteractionsDisabled = false;
+
+        enum KeyModifier
+        {
+            None = 0,
+            Alt = 1,
+            Control = 2,
+            Shift = 4,
+            WinKey = 8
+        }
 
         public TrackerForm(IHttpClientService httpClientService, ICharacterService characterService, IHtmlService htmlService)
         {
@@ -100,9 +112,12 @@ namespace PoeRankingTracker.Forms
             InitializeTranslations();
             secondsPlayed = 0;
             initialExperience = configuration.Entry.Character.Experience;
+            formInteractionsDisabled = configuration.InteractionsDisabled;
             templateContent = htmlService.GetTemplate(configuration.Template);
             initialLoading = true;
             webBrowser.Navigate(new Uri("about:blank"));
+            SetHotkey();
+            SetCursor();
         }
 
         private async void RetrieveData()
@@ -169,6 +184,26 @@ namespace PoeRankingTracker.Forms
             timerSecondsPlayed.Start();
         }
 
+        private void SetHotkey()
+        {
+            if (!NativeMethods.RegisterHotKey(Handle, hotkeyId, (int)KeyModifier.Control | (int)KeyModifier.Shift, Keys.O.GetHashCode()))
+            {
+                logger.Error("Failed to register hotkey");
+            }
+        }
+
+        private void SetCursor()
+        {
+            if (formInteractionsDisabled)
+            {
+                Cursor = Cursors.Default;
+            }
+            else
+            {
+                Cursor = Cursors.SizeAll;
+            }
+        }
+
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             RetrieveData();
@@ -179,7 +214,7 @@ namespace PoeRankingTracker.Forms
             secondsPlayed += Properties.Settings.Default.TimerInterval / 1000;
         }
 
-        private void TrackerForm_MouseMove(object sender, HtmlElementEventArgs  e)
+        private void TrackerForm_MouseMove(object sender, HtmlElementEventArgs e)
         {
             if (e.MouseButtonsPressed == MouseButtons.Left)
             {
@@ -204,7 +239,10 @@ namespace PoeRankingTracker.Forms
         {
             timer.Stop();
             timerSecondsPlayed.Stop();
+            Properties.Settings.Default.TrackerMoved = true;
             Properties.Settings.Default.TrackerLocation = Location;
+            Properties.Settings.Default.InteractionsDisabled = formInteractionsDisabled;
+            NativeMethods.UnregisterHotKey(Handle, hotkeyId);
         }
 
         private void TrackerForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -269,5 +307,63 @@ namespace PoeRankingTracker.Forms
                 Close();
             }
         }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            if (m.Msg == 0x0312)
+            {
+                formInteractionsDisabled = !formInteractionsDisabled;
+                if (formInteractionsDisabled)
+                {
+                    int wl = NativeMethods.GetWindowLong(this.Handle, NativeMethods.GWL.ExStyle);
+                    wl = wl | (int)NativeMethods.WS_EX.Layered | (int)NativeMethods.WS_EX.Transparent;
+                    _ = NativeMethods.SetWindowLong(this.Handle, NativeMethods.GWL.ExStyle, wl);
+                    //NativeMethods.SetLayeredWindowAttributes(this.Handle, 0, 215, NativeMethods.LWA.Alpha);
+                }
+                else
+                {
+                    int wl = NativeMethods.GetWindowLong(this.Handle, NativeMethods.GWL.ExStyle);
+                    wl = wl & (int)NativeMethods.WS_EX.Layered & (int)NativeMethods.WS_EX.Transparent;
+                    _ = NativeMethods.SetWindowLong(this.Handle, NativeMethods.GWL.ExStyle, wl);
+                    //NativeMethods.SetLayeredWindowAttributes(this.Handle, 0, 255, NativeMethods.LWA.Alpha);
+                }
+                SetCursor();
+            }
+        }
+    }
+
+    internal static class NativeMethods
+    {
+        public enum GWL
+        {
+            ExStyle = -20
+        }
+
+        public enum WS_EX
+        {
+            Transparent = 0x20,
+            Layered = 0x80000
+        }
+
+        public enum LWA
+        {
+            ColorKey = 0x1,
+            Alpha = 0x2
+        }
+
+        [DllImport("user32.dll")]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+        [DllImport("user32.dll")]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        public static extern int GetWindowLong(IntPtr hWnd, GWL nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        public static extern int SetWindowLong(IntPtr hWnd, GWL nIndex, int dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetLayeredWindowAttributes")]
+        public static extern bool SetLayeredWindowAttributes(IntPtr hWnd, int crKey, byte alpha, LWA dwFlags);
     }
 }

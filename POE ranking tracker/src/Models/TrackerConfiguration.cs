@@ -10,5 +10,6 @@ namespace PoeRankingTracker.Models
         public string Template { get; set; }
         public string AccountName { get; set; }
         public CultureInfo Culture { get; set; }
+        public bool InteractionsDisabled { get; set; }
     }
 }
